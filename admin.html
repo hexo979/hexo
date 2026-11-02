@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Math Dive Admin</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;700&family=Manrope:wght@400;600;800&display=swap">
+<style>
+:root{--bg:#f6f4ee;--grid:#dcd8cb;--ink:#1c2541;--mute:#6a6f85;--accent:#2f4bd1;--hl:#ffe45c;--ok:#1c8a4f;--bad:#c4382f;--card:#fffdf8;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121726;--grid:#1f2740;--ink:#e9ecf8;--mute:#9aa2c0;--accent:#8ea2ff;--hl:#c9a800;--ok:#4fd08a;--bad:#ff7a70;--card:#182037;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121726;--grid:#1f2740;--ink:#e9ecf8;--mute:#9aa2c0;--accent:#8ea2ff;--hl:#c9a800;--ok:#4fd08a;--bad:#ff7a70;--card:#182037;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px;color:var(--ink);font-family:Manrope,system-ui,sans-serif;display:flex;justify-content:center}
+main{width:100%;max-width:560px;padding:22px 18px 40px}
+h1{font-family:Spectral,Georgia,serif;font-size:2.4rem;margin:8px 0 4px;letter-spacing:-.5px}
+p{line-height:1.5;margin:0 0 12px}
+.mute{color:var(--mute);font-size:.92rem}
+.card{background:var(--card);border:2px solid var(--ink);border-radius:6px;padding:18px;box-shadow:4px 4px 0 var(--ink);margin:16px 0}
+button{font:inherit;font-weight:800;background:var(--ink);color:var(--bg);border:2px solid var(--ink);border-radius:6px;padding:12px 20px;cursor:pointer}
+button.alt{background:transparent;color:var(--ink)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.bar{display:flex;justify-content:space-between;font-weight:600;font-size:.9rem;color:var(--mute)}
+.eq{position:relative;font-family:Spectral,Georgia,serif;font-size:clamp(1.5rem,6.5vw,2.1rem);font-weight:700;line-height:1.35;padding:18px 6px;margin:12px 0;overflow-wrap:anywhere}
+.eq i{position:absolute;left:0;bottom:6px;height:.55em;width:100%;background:var(--hl);z-index:0;opacity:.85;transform-origin:left}
+.eq span{position:relative;z-index:1}
+.row{display:flex;gap:10px}
+input{flex:1;min-width:0;font:inherit;font-size:1.4rem;font-weight:800;padding:10px 12px;border:2px solid var(--ink);border-radius:6px;background:var(--bg);color:var(--ink)}
+.res{font-weight:800;font-size:1.15rem}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:8px}
+td,th{text-align:left;padding:6px 4px;border-bottom:1px solid var(--grid)}
+.big{font-family:Spectral,Georgia,serif;font-size:3.2rem;font-weight:700;line-height:1}
+.hide{display:none}
+.arow{display:flex;gap:8px;margin-bottom:8px}.arow .aq{flex:3}.arow .aa{flex:1;min-width:0}.arow input{font-size:1rem;padding:8px 10px}
+button.alt[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.lg main{font-size:1.12rem}.lg .eq{font-size:clamp(1.9rem,8vw,2.6rem)}.lg input{font-size:1.7rem}
+.calm #hl{display:none}
+</style>
+</head>
+<body>
+<main>
+<section id="login" class="hide">
+  <h1>Admin sign-in</h1>
+  <div class="card"><p><input id="lgE" type="email" placeholder="Email" aria-label="Email" style="font-size:1rem;width:100%"></p>
+  <p><input id="lgP" type="password" placeholder="Password" aria-label="Password" style="font-size:1rem;width:100%"></p>
+  <button id="lgBtn">Sign in</button><p id="lgMsg" class="mute" style="margin-top:10px"></p></div>
+</section>
+
+<section id="start">
+  <h1>Math Dive</h1>
+  <p>Seven hard equations. 60 seconds each. Whole-number answers only.</p>
+  <p class="mute">Exact answer: 100 points. Off by 1: 85. Off by 2 to 10: 60. Further off: up to 55, based on how far you are in percent. Answer within the first 8 seconds for the full speed bonus of up to +50% (it fades to zero by 60 seconds), but only if you are within 10 of the answer. Further off, the bonus shrinks: up to +30% if you are within 10%, up to +10% if within 50%, and none beyond that. The same seven equations appear for everyone on the same day.</p>
+  <div class="card">
+    <p><b>Today’s dive</b> <span class="mute" id="dateLbl"></span></p>
+    <p class="mute" id="bestLbl">No score saved on this device yet.</p><p class="mute" id="srcLbl"></p>
+    <div class="row"><button id="goDaily">Start today’s dive</button><button class="alt" id="goPractice">Practice (random)</button><button class="alt" id="goSet">Settings</button><button class="alt hide" id="goAdmin">Admin</button></div>
+  </div>
+</section>
+
+<section id="game" class="hide">
+  <div class="bar"><span id="rnd"></span><span id="tot"></span></div>
+  <div class="card">
+    <div class="bar"><span id="tier"></span><span id="tl">60.0s</span></div>
+    <div class="eq"><i id="hl"></i><span id="q"></span></div>
+    <div class="row"><input id="ans" type="text" inputmode="numeric" autocomplete="off" aria-label="Your answer"><button id="sub">Submit</button></div>
+    <p id="fb" class="res" style="margin:14px 0 0" aria-live="polite"></p>
+    <div id="nxtWrap" class="hide" style="margin-top:10px"><button id="nxt">Next equation</button></div>
+  </div>
+</section>
+
+<section id="settings" class="hide">
+  <h1>Settings</h1>
+  <div class="card">
+    <p><b>Theme</b></p>
+    <div class="row" id="stTheme"><button class="alt" data-v="auto">Auto</button><button class="alt" data-v="light">Light</button><button class="alt" data-v="dark">Dark</button></div>
+    <p style="margin-top:18px"><b>Text size</b></p>
+    <div class="row" id="stSize"><button class="alt" data-v="normal">Normal</button><button class="alt" data-v="large">Large</button></div>
+    <p style="margin-top:18px"><b>Timer</b></p>
+    <div class="row" id="stTimer"><button class="alt" data-v="bar">Highlighter</button><button class="alt" data-v="numbers">Numbers only</button></div>
+    <p style="margin-top:18px"><b>Practice time per equation</b></p>
+    <div class="row" id="stLimit"><button class="alt" data-v="30">30s</button><button class="alt" data-v="60">60s</button><button class="alt" data-v="90">90s</button></div>
+    <p class="mute" style="margin-top:14px">The daily dive always uses 60 seconds so scores can be compared. Settings are saved on this device.</p>
+  </div>
+  <button class="alt" id="stBack">Back to game</button>
+</section>
+
+<section id="admin" class="hide">
+  <h1>Admin</h1>
+  <p class="mute">Write the daily dive for any date. Players get your set on that day. A day with no saved dive gets a random set.</p>
+  <div class="card">
+    <label class="mute">Date <input type="date" id="adDate" style="font-size:1rem;margin-left:8px"></label>
+    <div id="adRows" style="margin-top:12px"></div>
+    <div class="row" style="margin-top:12px;flex-wrap:wrap"><button id="adSave">Save dive</button><button class="alt" id="adFill">Fill with random</button><button class="alt" id="adDel">Delete</button></div>
+    <p id="adMsg" class="mute" style="margin-top:10px" aria-live="polite"></p>
+  </div>
+  <div class="card"><p><b>Player stats</b></p><div id="adStats" style="font-size:.92rem">Pick a date to see its stats.</div></div>
+  <p><b>Saved dives</b></p><div id="adList" class="mute" style="margin-bottom:14px"></div>
+  <button class="alt" id="adBack">Back to game</button>
+</section>
+
+<section id="end" class="hide">
+  <h1>Dive complete</h1>
+  <div class="card">
+    <div class="big" id="final">0</div>
+    <p class="mute" id="finalSub"></p><p class="mute" id="pctl"></p>
+    <table id="sum"></table>
+  </div>
+  <div class="row" style="flex-wrap:wrap"><button id="share">Copy result</button><button class="alt" id="again">Practice again</button><button class="alt" id="menu">Back to menu</button></div>
+  <p id="shareMsg" class="mute" style="margin-top:10px"></p>
+  <p class="mute" style="margin-top:18px">Note: answers further than 10 away are scored by percent error for now. Once real players have played, this part can switch to a percentile of all players, which needs a shared database.</p>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+let LIMIT=60;const N=7;
+function rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function hash(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+const ri=(r,a,b)=>a+Math.floor(r()*(b-a+1));
+const MUL="\u00d7", MIN="\u2212", SQ="\u00b2";
+function modpow(b,e,m){let x=1;for(let i=0;i<e;i++)x=x*b%m;return x}
+function divisors(n){let c=1,m=n;for(let p=2;p*p<=m;p++){let k=0;while(m%p===0){m/=p;k++}c*=k+1}if(m>1)c*=2;return c}
+// each tier: text, answer, estimated share of players who solve it, estimated average solve time (s)
+const TIERS=[
+ {n:"Warm-up",p:.82,t:13,f:r=>{const a=ri(r,12,29),b=ri(r,12,29),c=ri(r,11,25),d=ri(r,11,25);return{q:`${a} ${MUL} ${b} + ${c} ${MUL} ${d}`,a:a*b+c*d}}},
+ {n:"Algebra",p:.7,t:15,f:r=>{const c=ri(r,2,6),a=c+ri(r,2,7),x=ri(r,3,20),b=ri(r,5,40),d=b+(a-c)*x;return{q:`${a}x + ${b} = ${c}x + ${d}.  x = ?`,a:x}}},
+ {n:"Percentages",p:.6,t:17,f:r=>{const P=[12,15,35,45,65,85],p1=P[ri(r,0,5)],p2=P[ri(r,0,5)],n1=20*ri(r,20,60),n2=20*ri(r,10,40);return{q:`${p1}% of ${n1} + ${p2}% of ${n2}`,a:p1*n1/100+p2*n2/100}}},
+ {n:"Quadratics",p:.5,t:18,f:r=>{const a=ri(r,2,25);let b=ri(r,2,25);if(b===a)b+=1;return{q:`Larger root of x${SQ} ${MIN} ${a+b}x + ${a*b} = 0`,a:Math.max(a,b)}}},
+ {n:"Series",p:.4,t:20,f:r=>{const n=ri(r,15,30),a=ri(r,3,12),d=ri(r,3,9);return{q:`Sum of the first ${n} terms of ${a}, ${a+d}, ${a+2*d}, ...`,a:n*(2*a+(n-1)*d)/2}}},
+ {n:"Remainders",p:.25,t:22,f:r=>{const m=[7,11,13][ri(r,0,2)],b=ri(r,3,9),e=ri(r,25,60);return{q:`Remainder when ${b}^${e} is divided by ${m}`,a:modpow(b,e,m)}}},
+ {n:"Boss",p:.2,t:23,f:r=>{const n=Math.pow(2,ri(r,2,5))*Math.pow(3,ri(r,1,3))*Math.pow(5,ri(r,1,2))*([1,7,11][ri(r,0,2)]);return{q:`How many positive divisors does ${n} have?`,a:divisors(n)}}}
+];
+function build(seed){const r=rng(seed);return TIERS.map(T=>{const o=T.f(r);return{...o,tier:T}})}
+function pts(item,val,time){if(val===null)return 0;const d=Math.abs(val-item.a),rel=d/Math.abs(item.a);let b,cap;if(d===0){b=100;cap=.5}else if(d===1){b=85;cap=.5}else if(d<=10){b=60;cap=.5}else{b=55*Math.max(0,1-rel);cap=rel<=.1?.3:rel<=.5?.1:0}return Math.round(b*(1+cap*Math.min(1,Math.max(0,1-(time-8)/(LIMIT-8)))))}
+
+let set,idx,score,log,tStart,raf,done,mode;
+const today=()=>new Date().toISOString().slice(0,10);
+function show(id){["start","game","end","admin","settings"].forEach(s=>$(s).classList.toggle("hide",s!==id))}
+function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function save(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function begin(m){mode=m;LIMIT=m==="daily"?60:ST.limit;set=(m==="daily"&&dailySet)?dailySet:build(m==="daily"?hash("mathdive"+today()):(Math.random()*1e9|0));idx=0;score=0;log=[];show("game");round()}
+function round(){const it=set[idx];done=false;$("rnd").textContent=`Equation ${idx+1} of ${N}`;$("tot").textContent=`${score} pts`;$("tier").textContent=it.tier.n;$("q").textContent=it.q;$("fb").textContent="";$("fb").className="res";$("nxtWrap").classList.add("hide");$("ans").value="";$("ans").disabled=false;$("sub").disabled=false;$("ans").focus();tStart=performance.now();tick()}
+function tick(){const el=(performance.now()-tStart)/1000,left=Math.max(0,LIMIT-el);$("tl").textContent=left.toFixed(1)+"s";$("hl").style.transform=`scaleX(${left/LIMIT})`;if(left<=0){const v=$("ans").value.trim().replace(",",".");finish(v!==""&&!isNaN(Number(v))?Number(v):null,LIMIT);return}if(!done)raf=requestAnimationFrame(tick)}
+function finish(val,time){if(done)return;done=true;cancelAnimationFrame(raf);const it=set[idx];const ok=val!==null&&val===it.a;const p=pts(it,val,time);score+=p;log.push({ok,p,time,tier:it.tier.n,val,a:it.a});
+ $("ans").disabled=true;$("sub").disabled=true;$("tot").textContent=`${score} pts`;
+ const T=it.tier;
+ $("fb").className="res "+(val!==null&&Math.abs(val-it.a)<=10?"ok":"bad");
+ $("fb").innerHTML=(val===null?`Time’s up, no answer. Correct answer: ${it.a}`:(ok?`Exact! +${p} pts`:`Correct answer: ${it.a}. You said ${val} (off by ${Math.abs(val-it.a)}). +${p} pts`))+`<br><span class="mute" style="font-weight:600">You took ${time.toFixed(1)}s. Faster answers earn a bonus.</span>`;
+ $("nxt").textContent=idx===N-1?"See results":"Next equation";$("nxtWrap").classList.remove("hide");$("nxt").focus()}
+function submit(){if(done)return;const v=$("ans").value.trim().replace(",",".");if(v===""||isNaN(Number(v)))return;finish(Number(v),(performance.now()-tStart)/1000)}
+function results(){show("end");$("final").textContent=score;const c=log.filter(x=>x.ok).length;$("finalSub").textContent=`${c} of ${N} exact`;
+ let best=Number(load("md-best")||0);if(mode==="daily"&&score>best){best=score;save("md-best",String(best))}
+ $("sum").innerHTML="<tr><th>Round</th><th>Result</th><th>Time</th><th>Pts</th></tr>"+log.map((x,i)=>`<tr><td>${x.tier}</td><td>${x.ok?"Exact":(x.val===null?"No answer":"Off by "+Math.abs(x.val-x.a))}</td><td>${x.time.toFixed(1)}s</td><td>${x.p}</td></tr>`).join("")}
+$("goDaily").onclick=()=>begin("daily");$("goPractice").onclick=()=>begin("practice");$("again").onclick=()=>begin("practice");$("menu").onclick=()=>{const bb=load("md-best");if(bb)$("bestLbl").textContent=`Your best daily score on this device: ${bb}`;$("shareMsg").textContent="";show("start")};
+$("sub").onclick=submit;$("ans").addEventListener("keydown",e=>{if(e.key==="Enter")submit()});
+$("nxt").onclick=()=>{if(idx===N-1){results()}else{idx++;round()}};
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&done&&!$("nxtWrap").classList.contains("hide")&&document.activeElement!==$("nxt"))$("nxt").click()});
+$("share").onclick=async()=>{const t=`Math Dive ${mode==="daily"?today():"practice"}: ${score} pts, ${log.filter(x=>x.ok).length}/${N} correct`;try{await navigator.clipboard.writeText(t);$("shareMsg").textContent="Copied. Paste it to a friend."}catch(e){$("shareMsg").textContent=t}};
+$("dateLbl").textContent=today();
+const b=load("md-best");if(b)$("bestLbl").textContent=`Your best daily score on this device: ${b}`;
+let dbh=null,dailySet=null;
+const esc=t=>String(t).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+function adRows(items){$("adRows").innerHTML=Array.from({length:N},(_,i)=>{const x=items&&items[i];return `<div class="arow"><input class="aq" aria-label="Equation ${i+1}" placeholder="Equation ${i+1}" value="${x?esc(x.q):""}"><input class="aa" type="number" step="any" aria-label="Answer ${i+1}" placeholder="Answer" value="${x?esc(x.a):""}"></div>`}).join("")}
+async function adLoad(){const d=$("adDate").value;if(!d||!dbh)return;try{const sn=await dbh.doc("dives/"+d).get();adRows(sn.exists?sn.data().items:null);$("adMsg").textContent=sn.exists?"Loaded the saved dive for this date.":"Nothing saved for this date yet."}catch(e){$("adMsg").textContent="Could not load this date."}}
+async function adList(){try{const q=await dbh.collection("dives").get();const ids=q.docs.map(x=>x.id).sort().reverse();$("adList").innerHTML=ids.length?ids.map(i=>`<a href="#" data-d="${i}" style="color:var(--accent);margin-right:12px">${i}</a>`).join(""):"None yet."}catch(e){$("adList").textContent="Could not load the list."}}
+$("adList").addEventListener("click",e=>{const d=e.target.getAttribute&&e.target.getAttribute("data-d");if(d){e.preventDefault();$("adDate").value=d;adLoad()}});
+$("goAdmin").onclick=()=>{show("admin");$("adDate").value=today();adRows(null);adLoad();adList()};
+$("adBack").onclick=()=>show("start");
+$("adDate").onchange=adLoad;
+$("adFill").onclick=()=>{const d=$("adDate").value||today();const st=build((Math.random()*1e9|0));adRows(st.map(x=>({q:x.q,a:x.a})));$("adMsg").textContent="Random set filled in. Edit it if you like, then save."};
+$("adSave").onclick=async()=>{const d=$("adDate").value;if(!d){$("adMsg").textContent="Pick a date first.";return}
+ const q=[...document.querySelectorAll(".aq")],a=[...document.querySelectorAll(".aa")];const items=[];
+ for(let i=0;i<N;i++){const t=q[i].value.trim(),v=a[i].value.trim();if(!t||v===""||isNaN(Number(v))){$("adMsg").textContent=`Equation ${i+1} needs text and a numeric answer.`;return}items.push({q:t,a:Number(v)})}
+ try{await dbh.doc("dives/"+d).set({items});$("adMsg").textContent="Saved for "+d+".";adList();if(d===today())dailySet=items.map((x,i)=>({q:x.q,a:x.a,tier:{n:"Equation "+(i+1)}}))}catch(e){$("adMsg").textContent="Could not save. Only editors can save dives."}};
+$("adDel").onclick=async()=>{const d=$("adDate").value;if(!d)return;try{await dbh.doc("dives/"+d).delete();$("adMsg").textContent="Deleted "+d+".";adRows(null);adList();if(d===today())dailySet=null}catch(e){$("adMsg").textContent="Could not delete."}};
+let ST={theme:"auto",size:"normal",timer:"bar",limit:60};
+try{Object.assign(ST,JSON.parse(localStorage.getItem("md-set")||"{}"))}catch(e){}
+const stKey={stTheme:"theme",stSize:"size",stTimer:"timer",stLimit:"limit"};
+function applySt(){const r=document.documentElement;if(ST.theme==="auto")r.removeAttribute("data-theme");else r.setAttribute("data-theme",ST.theme);document.body.classList.toggle("lg",ST.size==="large");document.body.classList.toggle("calm",ST.timer==="numbers");
+ for(const id in stKey)document.querySelectorAll("#"+id+" button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===String(ST[stKey[id]]))))}
+document.querySelectorAll("#settings .row").forEach(g=>g.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const k=stKey[g.id];ST[k]=k==="limit"?Number(b.dataset.v):b.dataset.v;try{localStorage.setItem("md-set",JSON.stringify(ST))}catch(x){}applySt()}));
+$("goSet").onclick=()=>show("settings");$("stBack").onclick=()=>show("start");applySt();
+let myId=null,lastTotal=0;
+const pc=(n,d)=>d?Math.round(100*n/d)+"%":"0%";
+async function allPlays(date){const out=[];try{const q=await dbh.collection("plays").get();lastTotal=q.docs.length;q.docs.forEach(x=>{const d=x.data(),r=d&&d.days&&d.days[date];if(r)out.push(r)})}catch(e){return null}return out}
+async function recordPlay(date,rec){if(!dbh||!myId)return null;try{const ref=dbh.doc("plays/"+myId),sn=await ref.get();const days=sn.exists&&sn.data().days?{...sn.data().days}:{};if(days[date])return false;days[date]=rec;await ref.set({days});return true}catch(e){return null}}
+function drawScale(i,all,mine,correct){const el=$("scale"+i);if(!el)return;const vals=all.map(r=>r.a?r.a[i]:null).filter(v=>typeof v==="number").sort((a,b)=>a-b);if(vals.length<3){el.innerHTML='<span class="mute">Not enough answers yet for a scale.</span>';return}const q=f=>{const k=(vals.length-1)*f,l=Math.floor(k),h=Math.ceil(k);return vals[l]+(vals[h]-vals[l])*(k-l)};const med=q(.5),p25=q(.25),p75=q(.75),m=typeof mine==="number"?mine:correct;let lo=Math.min(q(.05),correct,m),hi=Math.max(q(.95),correct,m);if(lo===hi){lo-=1;hi+=1}const pos=v=>Math.max(0,Math.min(100,100*(v-lo)/(hi-lo)));const r2=v=>Math.round(v*100)/100;const bar=(p,c,t,h)=>`<div style="position:absolute;left:${p}%;top:${t}px;width:4px;height:${h}px;margin-left:-2px;background:${c};border-radius:2px"></div>`;el.innerHTML=`<div style="position:relative;height:34px;margin:8px 8px 6px" role="img" aria-label="Answer scale"><div style="position:absolute;left:0;right:0;top:15px;height:4px;background:var(--grid);border-radius:2px"></div><div style="position:absolute;left:${pos(p25)}%;width:${pos(p75)-pos(p25)}%;top:11px;height:12px;background:var(--hl);border:1px solid var(--ink);border-radius:3px;box-sizing:border-box"></div>${bar(pos(med),"var(--ink)",2,30)}${bar(pos(correct),"var(--ok)",6,22)}${typeof mine==="number"?`<div style="position:absolute;left:${pos(mine)}%;top:10px;width:14px;height:14px;margin-left:-7px;background:var(--accent);border:2px solid var(--bg);border-radius:50%"></div>`:""}</div><span class="mute">Median ${r2(med)}. Middle half of players: ${r2(p25)} to ${r2(p75)}. <span style="color:var(--ink)">Bar = median</span>, <span style="color:var(--ok)">green = answer</span>, <span style="color:var(--accent)">dot = you</span>.</span>`}
+const _res=results;
+results=function(){_res();
+ $("sum").innerHTML=log.map((x,i)=>`<tr><td><b>${esc(set[i].q)}</b><br><span class="mute">You: ${x.val===null?"no answer":esc(x.val)} &middot; Answer: ${esc(set[i].a)} &middot; ${x.time.toFixed(1)}s &middot; +${x.p} pts</span><br><span class="mute" id="same${i}"></span><div id="scale${i}"></div></td></tr>`).join("");
+ if(mode!=="daily"){$("pctl").textContent="Practice games are not counted in player stats.";return}
+ $("pctl").textContent="Loading player stats...";
+ const dKey=today(),snap=log.map(x=>x.val),sc=score,tms=log.map(x=>Number(x.time.toFixed(1)));
+ (async()=>{if(!dbh||!myId){$("pctl").textContent="Player stats need a signed-in account with access to this page.";return}
+  const saved=await recordPlay(dKey,{s:sc,a:snap,t:tms});
+  const all=await allPlays(dKey);
+  if(!all||!all.length){$("pctl").textContent="Could not load player stats.";return}
+  const n=all.length,below=all.filter(r=>r.s<sc).length;
+  $("pctl").textContent=(n===1?"You are the first player today.":`${n} players so far. You scored higher than ${pc(below,n)} of them.`)+(saved===false?" Only your first play each day counts in the stats.":"");
+  snap.forEach((v,i)=>{const same=all.filter(r=>r.a&&r.a[i]===v).length;const el=$("same"+i);if(el)el.textContent=`${pc(same,n)} of players gave the same answer`;drawScale(i,all,v,Number(set[i].a))})})()};
+async function adStats(){const d=$("adDate").value,box=$("adStats");if(!d||!dbh)return;box.textContent="Loading stats...";
+ let items=null;try{const x=await dbh.doc("dives/"+d).get();if(x.exists)items=x.data().items}catch(e){}
+ const eqs=items||build(hash("mathdive"+d)).map(x=>({q:x.q,a:x.a}));
+ const all=await allPlays(d);if(all===null){box.textContent="Could not load stats.";return}
+ if(!all.length){box.textContent=`No players on ${d} yet. Players overall: ${lastTotal}.`;return}
+ const n=all.length,avg=Math.round(all.reduce((t,r)=>t+r.s,0)/n),top=Math.max(...all.map(r=>r.s));
+ let h=`<p><b>${n}</b> player${n>1?"s":""} on ${d}. Average score <b>${avg}</b>, top score <b>${top}</b>. Players overall: ${lastTotal}.</p>`;
+ h+=eqs.map((e,i)=>{const col=all.map(r=>r.a?r.a[i]:null);const ex=col.filter(v=>v===Number(e.a)).length,near=col.filter(v=>v!==null&&Math.abs(v-e.a)<=10).length;
+  const ts=all.map(r=>r.t&&r.t[i]).filter(v=>typeof v==="number");const at=ts.length?(ts.reduce((a,b)=>a+b,0)/ts.length).toFixed(1):"-";
+  const cnt={};col.forEach(v=>{const k=v===null?"no answer":String(v);cnt[k]=(cnt[k]||0)+1});
+  const t3=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k,c])=>`${esc(k)} (${c})`).join(", ");
+  return `<p style="margin:10px 0"><b>${esc(e.q)}</b> = ${esc(e.a)}<br>Exact ${pc(ex,n)} &middot; within 10: ${pc(near,n)} &middot; avg time ${at}s<br>Common answers: ${t3}</p>`}).join("");
+ box.innerHTML=h}
+$("adDate").addEventListener("change",adStats);
+$("goAdmin").addEventListener("click",()=>setTimeout(adStats,0));
+$("adList").addEventListener("click",e=>{if(e.target.getAttribute&&e.target.getAttribute("data-d"))setTimeout(adStats,0)});
+function makeDb(sb){const K={dives:["date","items"],plays:["uid","days"]};
+ return{doc(path){const[t,id]=path.split("/"),[pk,col]=K[t];return{
+  async get(){const{data,error}=await sb.from(t).select("*").eq(pk,id).maybeSingle();if(error)throw error;return{exists:!!data,data:()=>data?{[col]:data[col]}:undefined}},
+  async set(v){const{error}=await sb.from(t).upsert({[pk]:id,[col]:v[col]});if(error)throw error},
+  async delete(){const{error}=await sb.from(t).delete().eq(pk,id);if(error)throw error}}},
+ collection(t){const[pk,col]=K[t];return{async get(){const{data,error}=await sb.from(t).select("*");if(error)throw error;return{docs:data.map(r=>({id:r[pk],data:()=>({[col]:r[col]})}))}}}}}}
+const sb=supabase.createClient(MD_CONFIG.SUPABASE_URL,MD_CONFIG.SUPABASE_KEY);
+dbh=makeDb(sb);
+$("start").classList.add("hide");$("login").classList.remove("hide");
+$("adBack").textContent="Open player site";$("adBack").onclick=()=>{location.href="index.html"};
+function openAdmin(){$("login").classList.add("hide");$("goAdmin").onclick()}
+$("lgBtn").onclick=async()=>{const r=await sb.auth.signInWithPassword({email:$("lgE").value.trim(),password:$("lgP").value});if(r.error){$("lgMsg").textContent="Sign-in failed: "+r.error.message;return}openAdmin()};
+sb.auth.getSession().then(({data})=>{if(data.session&&data.session.user.email)openAdmin()});
+</script>
+</body>
+</html>
