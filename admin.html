@@ -37,6 +37,17 @@ td,th{text-align:left;padding:6px 4px;border-bottom:1px solid var(--grid)}
 button.alt[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .lg main{font-size:1.12rem}.lg .eq{font-size:clamp(1.9rem,8vw,2.6rem)}.lg input{font-size:1.7rem}
 .calm #hl{display:none}
+.card{border-radius:12px}
+button{border-radius:10px;box-shadow:0 3px 0 rgba(0,0,0,.3);transition:transform .12s,box-shadow .12s}
+button:hover{transform:translateY(-1px)}button:active{transform:translateY(2px);box-shadow:none}
+h1{display:inline-block;background:linear-gradient(transparent 62%,var(--hl) 62%)}
+.eq{border-radius:8px}#tl{font-family:Spectral,Georgia,serif;font-size:1.3rem;font-weight:700;color:var(--ink)}
+input,select{border-radius:10px}select{font:inherit;padding:10px;border:2px solid var(--ink);background:var(--bg);color:var(--ink)}
+section:not(.hide){animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.7);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.big{animation:pop .6s ease}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -92,6 +103,22 @@ button.alt[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
   <button class="alt" id="stBack">Back to game</button>
 </section>
 
+<section id="engine" class="hide">
+  <h1>Engine</h1>
+  <p class="mute">Sliders set how often each question type appears (0 turns it off). Saved changes apply to the daily dive and to practice for all players.</p>
+  <div class="card" id="engBox"></div>
+  <div class="card"><p><b>Add your own question</b></p>
+   <p class="mute">Template: write the question with {a}, {b} ..., give ranges and an answer formula using + - * / % ^ and brackets. Fixed: one question and its answer.</p>
+   <div class="row" style="margin-bottom:8px"><select id="cLv"></select><select id="cType"><option value="tpl">Template</option><option value="fixed">Fixed</option></select></div>
+   <p><input id="cQ" placeholder="Question, e.g. {a} \u00d7 {b} + {c}" style="font-size:1rem;width:100%"></p>
+   <div id="cTplRow"><p><input id="cR" placeholder="Ranges, e.g. a=12..29, b=3..9, c=10..50" style="font-size:1rem;width:100%"></p><p><input id="cE" placeholder="Answer formula, e.g. a*b+c" style="font-size:1rem;width:100%"></p></div>
+   <p id="cFixRow" class="hide"><input id="cA" type="number" placeholder="Answer" style="font-size:1rem;width:100%"></p>
+   <label class="mute">Weight: <b id="cWv">3</b><input id="cW" type="range" min="1" max="10" value="3" style="width:100%"></label>
+   <p><button id="cAdd">Add to engine</button></p><p id="cMsg" class="mute"></p></div>
+  <div class="row" style="flex-wrap:wrap"><button id="engSave">Save engine</button><button class="alt" id="engPrev">Preview 7 questions</button><button class="alt" id="engBack">Back to admin</button></div>
+  <p id="engMsg" class="mute" style="margin-top:10px"></p><div id="engOut"></div>
+</section>
+
 <section id="admin" class="hide">
   <h1>Admin</h1>
   <p class="mute">Write the daily dive for any date. Players get your set on that day. A day with no saved dive gets a random set.</p>
@@ -103,7 +130,7 @@ button.alt[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
   </div>
   <div class="card"><p><b>Player stats</b></p><div id="adStats" style="font-size:.92rem">Pick a date to see its stats.</div></div>
   <p><b>Saved dives</b></p><div id="adList" class="mute" style="margin-bottom:14px"></div>
-  <button class="alt" id="adBack">Back to game</button>
+  <button class="alt" id="adEng">Engine settings</button> <button class="alt" id="adBack">Back to game</button>
 </section>
 
 <section id="end" class="hide">
@@ -146,12 +173,12 @@ function pts(item,val,time){if(val===null)return 0;const d=Math.abs(val-item.a),
 
 let set,idx,score,log,tStart,raf,done,mode;
 const today=()=>new Date().toISOString().slice(0,10);
-function show(id){["start","game","end","admin","settings"].forEach(s=>$(s).classList.toggle("hide",s!==id))}
+function show(id){["start","game","end","admin","settings","engine"].forEach(s=>$(s).classList.toggle("hide",s!==id))}
 function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function save(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 function begin(m){mode=m;LIMIT=m==="daily"?60:ST.limit;set=(m==="daily"&&dailySet)?dailySet:build(m==="daily"?hash("mathdive"+today()):(Math.random()*1e9|0),m==="daily"?undefined:MD_ENGINE.presets[ST.diff]);idx=0;score=0;log=[];show("game");round()}
 function round(){const it=set[idx];done=false;$("rnd").textContent=`Equation ${idx+1} of ${N}`;$("tot").textContent=`${score} pts`;$("tier").textContent=it.tier.n;$("q").textContent=it.q;$("fb").textContent="";$("fb").className="res";$("nxtWrap").classList.add("hide");$("ans").value="";$("ans").disabled=false;$("sub").disabled=false;$("ans").focus();tStart=performance.now();tick()}
-function tick(){const el=(performance.now()-tStart)/1000,left=Math.max(0,LIMIT-el);$("tl").textContent=left.toFixed(1)+"s";$("hl").style.transform=`scaleX(${left/LIMIT})`;if(left<=0){const v=$("ans").value.trim().replace(",",".");finish(v!==""&&!isNaN(Number(v))?Number(v):null,LIMIT);return}if(!done)raf=requestAnimationFrame(tick)}
+function tick(){const el=(performance.now()-tStart)/1000,left=Math.max(0,LIMIT-el);$("tl").textContent=left.toFixed(1)+"s";$("hl").style.transform=`scaleX(${left/LIMIT})`;$("hl").style.background=left<8?"var(--bad)":"";$("tl").style.color=left<8?"var(--bad)":"";if(left<=0){const v=$("ans").value.trim().replace(",",".");finish(v!==""&&!isNaN(Number(v))?Number(v):null,LIMIT);return}if(!done)raf=requestAnimationFrame(tick)}
 function finish(val,time){if(done)return;done=true;cancelAnimationFrame(raf);const it=set[idx];const ok=val!==null&&val===it.a;const p=pts(it,val,time);score+=p;log.push({ok,p,time,tier:it.tier.n,val,a:it.a});
  $("ans").disabled=true;$("sub").disabled=true;$("tot").textContent=`${score} pts`;
  const T=it.tier;
@@ -173,7 +200,7 @@ let dbh=null,dailySet=null;
 const esc=t=>String(t).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
 function adRows(items){$("adRows").innerHTML=Array.from({length:N},(_,i)=>{const x=items&&items[i];return `<div class="arow"><input class="aq" aria-label="Equation ${i+1}" placeholder="Equation ${i+1}" value="${x?esc(x.q):""}"><input class="aa" type="number" step="any" aria-label="Answer ${i+1}" placeholder="Answer" value="${x?esc(x.a):""}"></div>`}).join("")}
 async function adLoad(){const d=$("adDate").value;if(!d||!dbh)return;try{const sn=await dbh.doc("dives/"+d).get();adRows(sn.exists?sn.data().items:null);$("adMsg").textContent=sn.exists?"Loaded the saved dive for this date.":"Nothing saved for this date yet."}catch(e){$("adMsg").textContent="Could not load this date."}}
-async function adList(){try{const q=await dbh.collection("dives").get();const ids=q.docs.map(x=>x.id).sort().reverse();$("adList").innerHTML=ids.length?ids.map(i=>`<a href="#" data-d="${i}" style="color:var(--accent);margin-right:12px">${i}</a>`).join(""):"None yet."}catch(e){$("adList").textContent="Could not load the list."}}
+async function adList(){try{const q=await dbh.collection("dives").get();const ids=q.docs.map(x=>x.id).filter(i=>i[0]!=="_").sort().reverse();$("adList").innerHTML=ids.length?ids.map(i=>`<a href="#" data-d="${i}" style="color:var(--accent);margin-right:12px">${i}</a>`).join(""):"None yet."}catch(e){$("adList").textContent="Could not load the list."}}
 $("adList").addEventListener("click",e=>{const d=e.target.getAttribute&&e.target.getAttribute("data-d");if(d){e.preventDefault();$("adDate").value=d;adLoad()}});
 $("goAdmin").onclick=()=>{show("admin");$("adDate").value=today();adRows(null);adLoad();adList()};
 $("adBack").onclick=()=>show("start");
@@ -256,6 +283,28 @@ function adExtra(all,eqs,d){let h='<hr style="border:0;border-top:1px solid var(
  const ret=lastDocs.filter(x=>Object.keys(x.days).length>1).length,tt=all.filter(r=>r.t).map(r=>r.t.reduce((a,b)=>a+b,0)),avgT=tt.length?Math.round(tt.reduce((a,b)=>a+b,0)/tt.length):0;
  const ex=eqs.map((e,i)=>all.filter(r=>r.a&&r.a[i]===Number(e.a)).length),hi=ex.indexOf(Math.max(...ex)),lo=ex.indexOf(Math.min(...ex)),n=all.length;
  h+=`<p style="margin-top:12px">Returning players (2+ days): <b>${ret}</b> of ${lastDocs.length}<br>Average time per game: <b>${avgT}s</b><br>Hardest: <b>${esc(eqs[lo].q)}</b> (${pc(ex[lo],n)} exact)<br>Easiest: <b>${esc(eqs[hi].q)}</b> (${pc(ex[hi],n)} exact)</p>`;return h}
+let ENG={w:{},custom:[]};
+async function loadEng(){try{const sn=await dbh.doc("dives/_engine").get();ENG=Object.assign({w:{},custom:[]},sn.exists?sn.data().items:{});MD_ENGINE.cfg=ENG}catch(e){}}
+function engRender(){const E=MD_ENGINE;let h="";
+ E.labels.forEach((ls,L)=>{h+=`<p style="margin:14px 0 4px"><b>Level ${L+1}: ${E.names[L]}</b></p>`;
+  ls.forEach((lb,i)=>{const id=(L+1)+"."+i,v=ENG.w[id]==null?1:ENG.w[id];h+=`<label class="mute" style="display:block;margin:6px 0">${lb}: <b>${v}</b><input type="range" min="0" max="10" value="${v}" data-w="${id}" style="width:100%"></label>`});
+  ENG.custom.forEach((c,ci)=>{if(+c.lv!==L+1)return;h+=`<div style="border:1px dashed var(--ink);border-radius:8px;padding:8px;margin:6px 0;font-size:.9rem"><b>Custom ${c.t==="tpl"?"template":"fixed"}:</b> ${esc(c.q)}${c.t==="tpl"?`<br>ranges: ${esc(c.r)} &middot; answer: ${esc(c.e)}`:` = ${esc(c.a)}`}<br><span class="mute">Weight ${c.w}</span> <button class="alt" data-del="${ci}" style="padding:4px 10px">Remove</button></div>`})});
+ $("engBox").innerHTML=h}
+$("cLv").innerHTML=MD_ENGINE.names.map((n,i)=>`<option value="${i+1}">Level ${i+1}: ${n}</option>`).join("");
+$("cType").onchange=()=>{const t=$("cType").value==="tpl";$("cTplRow").classList.toggle("hide",!t);$("cFixRow").classList.toggle("hide",t)};
+$("cW").oninput=()=>{$("cWv").textContent=$("cW").value};
+$("engBox").addEventListener("input",e=>{const id=e.target.dataset&&e.target.dataset.w;if(id){ENG.w[id]=+e.target.value;e.target.parentNode.querySelector("b").textContent=e.target.value}});
+$("engBox").addEventListener("click",e=>{const b=e.target.closest("[data-del]");if(b){ENG.custom.splice(+b.dataset.del,1);engRender()}});
+$("cAdd").onclick=()=>{const t=$("cType").value,c={lv:+$("cLv").value,t,q:$("cQ").value.trim(),w:+$("cW").value};let msg="Added.";
+ if(!c.q){$("cMsg").textContent="Write the question first.";return}
+ if(t==="fixed"){const a=$("cA").value.trim();if(a===""||isNaN(+a)){$("cMsg").textContent="Enter a numeric answer.";return}c.a=+a}
+ else{c.r=$("cR").value.trim();c.e=$("cE").value.trim();let o=null;try{o=MD_ENGINE.fromCustom(c,Math.random)}catch(e){}
+  if(!o){$("cMsg").textContent="That template did not give positive whole-number answers. Check the ranges and the formula.";return}msg="Added. Example: "+o.q+" = "+o.a}
+ ENG.custom.push(c);engRender();$("cMsg").textContent=msg};
+$("engSave").onclick=async()=>{try{await dbh.doc("dives/_engine").set({items:ENG});$("engMsg").textContent="Saved. Players get the new engine the next time they open the game."}catch(e){$("engMsg").textContent="Could not save. Are you signed in as admin?"}};
+$("engPrev").onclick=()=>{MD_ENGINE.cfg=ENG;$("engOut").innerHTML=build((Math.random()*1e9)|0).map((x,i)=>`<p style="margin:6px 0">${i+1}. ${esc(x.q)} = <b>${esc(x.a)}</b></p>`).join("")};
+$("adEng").onclick=async()=>{await loadEng();engRender();$("engMsg").textContent="";$("engOut").innerHTML="";show("engine")};
+$("engBack").onclick=()=>show("admin");
 function makeDb(sb){const K={dives:["date","items"],plays:["uid","days"]};
  return{doc(path){const[t,id]=path.split("/"),[pk,col]=K[t];return{
   async get(){const{data,error}=await sb.from(t).select("*").eq(pk,id).maybeSingle();if(error)throw error;return{exists:!!data,data:()=>data?{[col]:data[col]}:undefined}},
@@ -266,7 +315,7 @@ const sb=supabase.createClient(MD_CONFIG.SUPABASE_URL,MD_CONFIG.SUPABASE_KEY);
 dbh=makeDb(sb);
 $("start").classList.add("hide");$("login").classList.remove("hide");
 $("adBack").textContent="Open player site";$("adBack").onclick=()=>{location.href="index.html"};
-function openAdmin(){$("login").classList.add("hide");$("goAdmin").onclick()}
+function openAdmin(){$("login").classList.add("hide");loadEng();$("goAdmin").onclick()}
 $("lgBtn").onclick=async()=>{const r=await sb.auth.signInWithPassword({email:$("lgE").value.trim(),password:$("lgP").value});if(r.error){$("lgMsg").textContent="Sign-in failed: "+r.error.message;return}openAdmin()};
 sb.auth.getSession().then(({data})=>{if(data.session&&data.session.user.email)openAdmin()});
 

@@ -37,6 +37,17 @@ td,th{text-align:left;padding:6px 4px;border-bottom:1px solid var(--grid)}
 button.alt[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .lg main{font-size:1.12rem}.lg .eq{font-size:clamp(1.9rem,8vw,2.6rem)}.lg input{font-size:1.7rem}
 .calm #hl{display:none}
+.card{border-radius:12px}
+button{border-radius:10px;box-shadow:0 3px 0 rgba(0,0,0,.3);transition:transform .12s,box-shadow .12s}
+button:hover{transform:translateY(-1px)}button:active{transform:translateY(2px);box-shadow:none}
+h1{display:inline-block;background:linear-gradient(transparent 62%,var(--hl) 62%)}
+.eq{border-radius:8px}#tl{font-family:Spectral,Georgia,serif;font-size:1.3rem;font-weight:700;color:var(--ink)}
+input,select{border-radius:10px}select{font:inherit;padding:10px;border:2px solid var(--ink);background:var(--bg);color:var(--ink)}
+section:not(.hide){animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.7);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.big{animation:pop .6s ease}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -144,7 +155,7 @@ function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function save(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 function begin(m){mode=m;LIMIT=m==="daily"?60:ST.limit;set=(m==="daily"&&dailySet)?dailySet:build(m==="daily"?hash("mathdive"+today()):(Math.random()*1e9|0),m==="daily"?undefined:MD_ENGINE.presets[ST.diff]);idx=0;score=0;log=[];show("game");round()}
 function round(){const it=set[idx];done=false;$("rnd").textContent=`Equation ${idx+1} of ${N}`;$("tot").textContent=`${score} pts`;$("tier").textContent=it.tier.n;$("q").textContent=it.q;$("fb").textContent="";$("fb").className="res";$("nxtWrap").classList.add("hide");$("ans").value="";$("ans").disabled=false;$("sub").disabled=false;$("ans").focus();tStart=performance.now();tick()}
-function tick(){const el=(performance.now()-tStart)/1000,left=Math.max(0,LIMIT-el);$("tl").textContent=left.toFixed(1)+"s";$("hl").style.transform=`scaleX(${left/LIMIT})`;if(left<=0){const v=$("ans").value.trim().replace(",",".");finish(v!==""&&!isNaN(Number(v))?Number(v):null,LIMIT);return}if(!done)raf=requestAnimationFrame(tick)}
+function tick(){const el=(performance.now()-tStart)/1000,left=Math.max(0,LIMIT-el);$("tl").textContent=left.toFixed(1)+"s";$("hl").style.transform=`scaleX(${left/LIMIT})`;$("hl").style.background=left<8?"var(--bad)":"";$("tl").style.color=left<8?"var(--bad)":"";if(left<=0){const v=$("ans").value.trim().replace(",",".");finish(v!==""&&!isNaN(Number(v))?Number(v):null,LIMIT);return}if(!done)raf=requestAnimationFrame(tick)}
 function finish(val,time){if(done)return;done=true;cancelAnimationFrame(raf);const it=set[idx];const ok=val!==null&&val===it.a;const p=pts(it,val,time);score+=p;log.push({ok,p,time,tier:it.tier.n,val,a:it.a});
  $("ans").disabled=true;$("sub").disabled=true;$("tot").textContent=`${score} pts`;
  const T=it.tier;
@@ -166,7 +177,7 @@ let dbh=null,dailySet=null;
 const esc=t=>String(t).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
 function adRows(items){$("adRows").innerHTML=Array.from({length:N},(_,i)=>{const x=items&&items[i];return `<div class="arow"><input class="aq" aria-label="Equation ${i+1}" placeholder="Equation ${i+1}" value="${x?esc(x.q):""}"><input class="aa" type="number" step="any" aria-label="Answer ${i+1}" placeholder="Answer" value="${x?esc(x.a):""}"></div>`}).join("")}
 async function adLoad(){const d=$("adDate").value;if(!d||!dbh)return;try{const sn=await dbh.doc("dives/"+d).get();adRows(sn.exists?sn.data().items:null);$("adMsg").textContent=sn.exists?"Loaded the saved dive for this date.":"Nothing saved for this date yet."}catch(e){$("adMsg").textContent="Could not load this date."}}
-async function adList(){try{const q=await dbh.collection("dives").get();const ids=q.docs.map(x=>x.id).sort().reverse();$("adList").innerHTML=ids.length?ids.map(i=>`<a href="#" data-d="${i}" style="color:var(--accent);margin-right:12px">${i}</a>`).join(""):"None yet."}catch(e){$("adList").textContent="Could not load the list."}}
+async function adList(){try{const q=await dbh.collection("dives").get();const ids=q.docs.map(x=>x.id).filter(i=>i[0]!=="_").sort().reverse();$("adList").innerHTML=ids.length?ids.map(i=>`<a href="#" data-d="${i}" style="color:var(--accent);margin-right:12px">${i}</a>`).join(""):"None yet."}catch(e){$("adList").textContent="Could not load the list."}}
 $("adList").addEventListener("click",e=>{const d=e.target.getAttribute&&e.target.getAttribute("data-d");if(d){e.preventDefault();$("adDate").value=d;adLoad()}});
 $("goAdmin").onclick=()=>{show("admin");$("adDate").value=today();adRows(null);adLoad();adList()};
 $("adBack").onclick=()=>show("start");
@@ -259,6 +270,7 @@ const sb=supabase.createClient(MD_CONFIG.SUPABASE_URL,MD_CONFIG.SUPABASE_KEY);
 dbh=makeDb(sb);
 (async()=>{try{if(MD_CONFIG.SUPABASE_URL.includes("YOUR-PROJECT")){$("srcLbl").textContent="Setup needed: fill in config.js.";return}
  let{data:{session}}=await sb.auth.getSession();if(!session){session=(await sb.auth.signInAnonymously()).data.session}myId=session.user.id;
+ try{const ec=await dbh.doc("dives/_engine").get();if(ec.exists&&ec.data().items)MD_ENGINE.cfg=Object.assign({w:{},custom:[]},ec.data().items)}catch(e){}
  const sn=await dbh.doc("dives/"+today()).get();if(sn.exists){const it=sn.data().items;if(Array.isArray(it)&&it.length===N){dailySet=it.map((x,i)=>({q:String(x.q),a:Number(x.a),tier:{n:"Equation "+(i+1)}}));$("srcLbl").textContent="Today\u2019s dive was written by the host."}}}catch(e){}})();
 </script>
 </body>

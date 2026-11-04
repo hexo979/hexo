@@ -31,9 +31,25 @@ const G={
    r=>{const n=ri(r,40,200);let z=0;for(let p=5;p<=n;p*=5)z+=Math.floor(n/p);return{q:`How many trailing zeros does ${n}! have?`,a:z}},
    r=>{const n=ri(r,8,12),k=ri(r,3,5);return{q:`How many ways to choose ${k} items from ${n}?`,a:nCr(n,k)}}]
 };
+function evalExpr(src,v){const t=String(src).match(/\d+\.?\d*|[a-z]|\*\*|[-+*\/%^()]/gi)||[];let i=0;
+ const prim=()=>{const x=t[i++];if(x==="("){const r=add();if(t[i++]!==")")throw 0;return r}if(x==="-")return -prim();if(x&&/^\d/.test(x))return +x;if(x&&/^[a-z]$/i.test(x)&&x in v)return v[x];throw 0};
+ const pow=()=>{let b=prim();while(t[i]==="^"||t[i]==="**"){i++;b=Math.pow(b,prim())}return b};
+ const mul=()=>{let a=pow();while(t[i]==="*"||t[i]==="/"||t[i]==="%"){const o=t[i++],b=pow();a=o==="*"?a*b:o==="/"?a/b:a%b}return a};
+ const add=()=>{let a=mul();while(t[i]==="+"||t[i]==="-"){const o=t[i++],b=mul();a=o==="+"?a+b:a-b}return a};
+ const r=add();if(i!==t.length)throw 0;return r}
 const NAMES=["Warm-up","Algebra","Percentages","Quadratics","Series","Number theory","Boss"];
-const E={names:NAMES,presets:{Easy:[1,1,2,2,3,3,4],Normal:[1,2,3,4,5,6,7],Hard:[3,4,4,5,6,7,7]},
- gen(level,r){const o=pick(r,G[level])(r);return{q:o.q,a:o.a,tier:{n:NAMES[level-1]}}},
+const E={names:NAMES,cfg:{w:{},custom:[]},labels:[["Multiply and add","Brackets and subtract","Multiply and subtract"],["Linear equation A","Linear equation B","Percent plus product"],["Two percentages","Brackets squared","Sum of squares"],["Quadratic roots","Two unknowns","Expand brackets"],["Arithmetic sum","Geometric sum","Nth term"],["Remainders","GCD","LCM"],["Divisor count","Trailing zeros","Combinations"]],evalExpr,presets:{Easy:[1,1,2,2,3,3,4],Normal:[1,2,3,4,5,6,7],Hard:[3,4,4,5,6,7,7]},
+ fromCustom(c,r){if(c.t!=="tpl")return{q:c.q,a:Number(c.a)};
+  for(let n=0;n<30;n++){const v={};String(c.r||"").split(",").forEach(p=>{const m=p.trim().match(/^([a-z])\s*=\s*(-?\d+)\s*\.\.\s*(-?\d+)$/i);if(m)v[m[1]]=ri(r,+m[2],+m[3])});
+   let a;try{a=evalExpr(c.e,v)}catch(e){continue}
+   if(Number.isInteger(a)&&a>0)return{q:String(c.q).replace(/\{([a-z])\}/gi,(_,k)=>k in v?v[k]:"?"),a}}
+  return null},
+ gen(level,r){const cf=E.cfg||{},W=cf.w||{};const items=G[level].map((g,i)=>({w:W[level+"."+i]==null?1:+W[level+"."+i],f:()=>g(r)}));
+  (cf.custom||[]).forEach(c=>{const w=c.w==null?1:+c.w;if(+c.lv===level&&w>0)items.push({w,f:()=>E.fromCustom(c,r)})});
+  let tot=items.reduce((a,x)=>a+x.w,0);if(!(tot>0)){items.forEach(x=>x.w=1);tot=items.length}
+  let k=r()*tot,it=items[items.length-1];for(const x of items){if((k-=x.w)<0){it=x;break}}
+  let o=null;try{o=it.f()}catch(e){}if(!o||!Number.isFinite(o.a))o=G[level][0](r);
+  return{q:o.q,a:o.a,tier:{n:NAMES[level-1]}}},
  set(r,levels){const seen={};return(levels||E.presets.Normal).map(l=>{let o,t=0;do{o=E.gen(l,r)}while(seen[o.q]&&++t<5);seen[o.q]=1;return o})}};
 if(typeof window!=="undefined")window.MD_ENGINE=E;else module.exports=E;
 })();
