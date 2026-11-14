@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Math Dive</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;700&family=Manrope:wght@400;600;800&display=swap">
+<style>
+:root{--bg:#f6f4ee;--grid:#dcd8cb;--ink:#1c2541;--mute:#6a6f85;--accent:#2f4bd1;--hl:#ffe45c;--ok:#1c8a4f;--bad:#c4382f;--card:#fffdf8;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121726;--grid:#1f2740;--ink:#e9ecf8;--mute:#9aa2c0;--accent:#8ea2ff;--hl:#c9a800;--ok:#4fd08a;--bad:#ff7a70;--card:#182037;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121726;--grid:#1f2740;--ink:#e9ecf8;--mute:#9aa2c0;--accent:#8ea2ff;--hl:#c9a800;--ok:#4fd08a;--bad:#ff7a70;--card:#182037;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px;color:var(--ink);font-family:Manrope,system-ui,sans-serif;display:flex;justify-content:center}
+main{width:100%;max-width:560px;padding:22px 18px 40px}
+h1{font-family:Spectral,Georgia,serif;font-size:2.4rem;margin:8px 0 4px;letter-spacing:-.5px}
+p{line-height:1.5;margin:0 0 12px}
+.mute{color:var(--mute);font-size:.92rem}
+.card{background:var(--card);border:2px solid var(--ink);border-radius:6px;padding:18px;box-shadow:4px 4px 0 var(--ink);margin:16px 0}
+button{font:inherit;font-weight:800;background:var(--ink);color:var(--bg);border:2px solid var(--ink);border-radius:6px;padding:12px 20px;cursor:pointer}
+button.alt{background:transparent;color:var(--ink)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.bar{display:flex;justify-content:space-between;font-weight:600;font-size:.9rem;color:var(--mute)}
+.eq{position:relative;font-family:Spectral,Georgia,serif;font-size:clamp(1.5rem,6.5vw,2.1rem);font-weight:700;line-height:1.35;padding:18px 6px;margin:12px 0;overflow-wrap:anywhere}
+.eq i{position:absolute;left:0;bottom:6px;height:.55em;width:100%;background:var(--hl);z-index:0;opacity:.85;transform-origin:left}
+.eq span{position:relative;z-index:1}
+.row{display:flex;gap:10px}
+input{flex:1;min-width:0;font:inherit;font-size:1.4rem;font-weight:800;padding:10px 12px;border:2px solid var(--ink);border-radius:6px;background:var(--bg);color:var(--ink)}
+.res{font-weight:800;font-size:1.15rem}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:8px}
+td,th{text-align:left;padding:6px 4px;border-bottom:1px solid var(--grid)}
+.big{font-family:Spectral,Georgia,serif;font-size:3.2rem;font-weight:700;line-height:1}
+.hide{display:none}
+.arow{display:flex;gap:8px;margin-bottom:8px}.arow .aq{flex:3}.arow .aa{flex:1;min-width:0}.arow input{font-size:1rem;padding:8px 10px}
+button.alt[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.lg main{font-size:1.12rem}.lg .eq{font-size:clamp(1.9rem,8vw,2.6rem)}.lg input{font-size:1.7rem}
+.calm #hl{display:none}
+.card{border-radius:12px}
+button{border-radius:10px;box-shadow:0 3px 0 rgba(0,0,0,.3);transition:transform .12s,box-shadow .12s}
+button:hover{transform:translateY(-1px)}button:active{transform:translateY(2px);box-shadow:none}
+h1{display:inline-block;background:linear-gradient(transparent 62%,var(--hl) 62%)}
+.eq{border-radius:8px}#tl{font-family:Spectral,Georgia,serif;font-size:1.3rem;font-weight:700;color:var(--ink)}
+input,select{border-radius:10px}select{font:inherit;padding:10px;border:2px solid var(--ink);background:var(--bg);color:var(--ink)}
+section:not(.hide){animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.7);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.big{animation:pop .6s ease}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<section id="start">
+  <p><a href="index.html" style="color:var(--accent)">&larr; Quick Math</a></p>
+  <h1>Math Dive</h1>
+  <p>Seven prompts, 25 seconds each. Name something that fits. The rarer your answer among players, the deeper you dive.</p>
+  <p class="mute">Typos are forgiven. Answers that are not on the list yet are reviewed by the host.</p>
+  <div class="card"><p id="stat" class="mute">Loading today&rsquo;s dive...</p><button id="go" disabled>Start diving</button></div>
+</section>
+<section id="game" class="hide">
+  <div class="bar"><span id="rnd"></span><span id="dep"></span></div>
+  <div class="card">
+    <div class="bar"><span>Prompt</span><span id="tl">25.0s</span></div>
+    <div class="eq"><i id="hl"></i><span id="q"></span></div>
+    <div class="row"><input id="ans" type="text" autocomplete="off" autocapitalize="none" aria-label="Your answer" placeholder="Type your answer"><button id="sub">Submit</button></div>
+    <p id="res" class="res" style="margin:14px 0 0" aria-live="polite"></p>
+    <div id="nxtWrap" class="hide" style="margin-top:10px"><button id="nxt">Next</button></div>
+  </div>
+</section>
+<section id="end" class="hide">
+  <h1>Dive complete</h1>
+  <div class="card"><div class="big" id="depth"></div><p class="mute" id="fin"></p><div id="sum"></div></div>
+  <p><a href="index.html" style="color:var(--accent)">Play Quick Math</a></p>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script>
+const $=id=>document.getElementById(id),LIMIT=25,N=7;
+const D=new Date().toISOString().slice(0,10);
+const esc=t=>String(t).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+let ST={};try{ST=JSON.parse(localStorage.getItem("md-set")||"{}")}catch(e){}
+if(ST.theme&&ST.theme!=="auto")document.documentElement.setAttribute("data-theme",ST.theme);if(ST.size==="large")document.body.classList.add("lg");
+const sb=supabase.createClient(MD_CONFIG.SUPABASE_URL,MD_CONFIG.SUPABASE_KEY);
+let prompts=null,uid=null,cnt=[],tot=[],mine=null,idx=0,score=0,log=[],t0=0,raf=0,done=true;
+const show=id=>["start","game","end"].forEach(s=>$(s).classList.toggle("hide",s!==id));
+function pts(i,c){const n=tot[i],k=cnt[i][c]||0;if(n<5)return 60;return Math.round(15+85*(1-(k+1)/(n+1)))}
+function share(i,c){const n=tot[i];return n<5?"Not enough players yet to compare":Math.round(100*((cnt[i][c]||0)+1)/(n+1))+"% of players said this"}
+const norm=s=>String(s).toLowerCase().replace(/\u03c0/g,"pi").replace(/\u221a/g,"root ").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim();
+const stem=s=>norm(s).split(" ").map(w=>w.length>3?w.replace(/(s|x|z|ch|sh)es$/,"$1").replace(/([^s])s$/,"$1"):w).join(" ");
+function lev(a,b){const m=[];for(let i=0;i<=a.length;i++)m[i]=[i];for(let j=1;j<=b.length;j++)m[0][j]=j;for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)m[i][j]=Math.min(m[i-1][j]+1,m[i][j-1]+1,m[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return m[a.length][b.length]}
+const parseList=s=>String(s||"").split(",").map(g=>g.split("/").map(x=>x.trim()).filter(Boolean)).filter(g=>g.length);
+const GEN=/ (triangle|shape|angle|number|numbers|function|fraction|sequence|unit|system|graph|chart|polygon|operation|average|solid)$/;
+function matchList(text,list){const n=norm(text),tries=[n],t2=n.replace(GEN,"");if(t2&&t2!==n)tries.push(t2);let best=null,bd=9;
+ for(const t of tries){const ts=stem(t);for(const g of list)for(const al of g){const as=stem(al),th=as.length>=7?2:as.length>=4?1:0,d=lev(ts,as);if(d<=th&&d<bd){bd=d;best=norm(g[0])}}}return best}
+const ptext=i=>typeof prompts[i]==="string"?prompts[i]:prompts[i].p;
+async function judge(text,i){const n=norm(text);if(!n)return{v:false,c:""};
+ const it=prompts[i],m=typeof it==="string"?null:matchList(text,parseList(it.a));if(m)return{v:true,c:m};
+ const key=ptext(i)+"|"+n,{data,error}=await sb.from("verdicts").select("v").eq("key",key).maybeSingle();if(error)throw error;
+ if(data&&data.v){if(data.v.s==="valid")return{v:true,c:data.v.canon};if(data.v.s==="invalid")return{v:false,c:""};return{v:false,c:"",pending:true}}
+ await sb.from("verdicts").insert({key,v:{s:"pending",raw:text.slice(0,40),date:D}});return{v:false,c:"",pending:true}}
+async function boot(){try{let{data:{session}}=await sb.auth.getSession();if(!session)session=(await sb.auth.signInAnonymously()).data.session;uid=session.user.id;
+ const p=await sb.from("dive_prompts").select("items").eq("date",D).maybeSingle();prompts=p.data&&p.data.items;
+ if(!prompts){$("stat").textContent="No dive has been set for today yet. Check back soon.";return}
+ cnt=prompts.map(()=>({}));tot=prompts.map(()=>0);
+ const pl=await sb.from("dive_plays").select("*");(pl.data||[]).forEach(row=>{const r=(row.days||{})[D];if(!r)return;if(row.uid===uid)mine=r;(r.r||[]).forEach((x,i)=>{if(x&&x.v&&x.c&&i<N){cnt[i][x.c]=(cnt[i][x.c]||0)+1;tot[i]++}})});
+ if(mine){showEnd(mine,true);return}
+ $("stat").textContent="Today\u2019s dive is ready: "+D;$("go").disabled=false}catch(e){$("stat").textContent="Could not load. Check config.js and the setup steps."}}
+$("go").onclick=()=>{idx=0;score=0;log=[];show("game");round()};
+function round(){done=false;$("rnd").textContent=`Prompt ${idx+1} of ${N}`;$("dep").textContent=score*10+" m";$("q").textContent=ptext(idx);$("ans").value="";$("ans").disabled=false;$("sub").disabled=false;$("res").textContent="";$("res").className="res";$("nxtWrap").classList.add("hide");$("ans").focus();t0=performance.now();tick()}
+function tick(){const l=Math.max(0,LIMIT-(performance.now()-t0)/1000);$("tl").textContent=l.toFixed(1)+"s";$("hl").style.transform=`scaleX(${l/LIMIT})`;$("hl").style.background=l<8?"var(--bad)":"";if(l<=0){submit();return}if(!done)raf=requestAnimationFrame(tick)}
+async function submit(){if(done)return;done=true;cancelAnimationFrame(raf);$("ans").disabled=true;$("sub").disabled=true;const text=$("ans").value.trim();let v=false,c="";
+ let pend=false;if(text){$("res").textContent="Checking...";try{const r=await judge(text,idx);v=r.v;c=r.c;pend=!!r.pending}catch(e){v=null}}
+ const s=v?pts(idx,c):0;score+=s;log.push({t:text,c,v,s,p:pend});$("dep").textContent=score*10+" m";
+ $("res").className="res "+(v?"ok":"bad");
+ $("res").innerHTML=v?`${esc(c)} counts! +${s*10} m<br><span class="mute" style="font-weight:600">${share(idx,c)}</span>`:(v===null?"Could not check this answer, no points.":(pend?"Not on the list yet. Sent for review, no points for now.":(text?"Not accepted.":"No answer.")));
+ $("nxt").textContent=idx===N-1?"See results":"Next";$("nxtWrap").classList.remove("hide");$("nxt").focus()}
+$("sub").onclick=submit;$("ans").addEventListener("keydown",e=>{if(e.key==="Enter")submit()});
+$("nxt").onclick=async()=>{if(idx<N-1){idx++;round();return}
+ const rec={s:score,n:(ST.nick||"").slice(0,16),r:log};
+ try{const o=await sb.from("dive_plays").select("days").eq("uid",uid).maybeSingle(),days=(o.data&&o.data.days)||{};if(!days[D]){days[D]=rec;await sb.from("dive_plays").upsert({uid,days})}}catch(e){}
+ log.forEach((x,i)=>{if(x.v&&x.c){cnt[i][x.c]=(cnt[i][x.c]||0)+1;tot[i]++}});showEnd(rec,false)};
+function showEnd(rec,again){show("end");$("depth").textContent=rec.s*10+" m";$("fin").textContent=again?"You already dived today. Come back tomorrow.":"Deepest answers are the rarest ones.";
+ $("sum").innerHTML=rec.r.map((x,i)=>{const top=Object.entries(cnt[i]||{}).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k,c])=>`${esc(k)} (${Math.round(100*c/Math.max(1,tot[i]))}%)`).join(", ");
+  return `<p style="margin:10px 0"><b>${esc(ptext(i))}</b><br>You: ${x.t?esc(x.t):"no answer"} ${x.v?"&rarr; "+esc(x.c)+" &middot; +"+x.s*10+" m":x.p?"(under review)":x.v===null?"(could not be checked)":"(not accepted)"}<br><span class="mute">Top answers: ${top||"none yet"}</span></p>`}).join("")}
+boot();
+</script>
+</body>
+</html>

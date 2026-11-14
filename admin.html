@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Math Dive Admin</title>
+<title>Admin</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;700&family=Manrope:wght@400;600;800&display=swap">
 <style>
 :root{--bg:#f6f4ee;--grid:#dcd8cb;--ink:#1c2541;--mute:#6a6f85;--accent:#2f4bd1;--hl:#ffe45c;--ok:#1c8a4f;--bad:#c4382f;--card:#fffdf8;
@@ -60,17 +60,18 @@ section:not(.hide){animation:fade .3s ease}
 </section>
 
 <section id="start">
-  <h1>Math Dive</h1>
+  <a class="card" href="dive.html" style="display:block;text-decoration:none;color:var(--ink);margin-top:0"><b style="font-size:1.3rem">Math Dive</b> <span class="mute">daily</span><br><span class="mute">Name it. The rarer your answer, the deeper you dive.</span></a>
+  <h1>Quick Math</h1>
   <p>Seven hard equations. 60 seconds each. Whole-number answers only.</p>
   <p class="mute">Exact answer: 100 points. Off by 1: 85. Off by 2 to 10: 60. Further off: up to 55, based on how far you are in percent. Answer within the first 8 seconds for the full speed bonus of up to +50% (it fades to zero by 60 seconds), but only if you are within 10 of the answer. Further off, the bonus shrinks: up to +30% if you are within 10%, up to +10% if within 50%, and none beyond that. The same seven equations appear for everyone on the same day.</p>
   <div class="card">
-    <p><b>Today’s dive</b> <span class="mute" id="dateLbl"></span></p>
+    <p><b>Daily Quick Math</b> <span class="mute" id="dateLbl"></span></p>
     <p class="mute" id="bestLbl">No score saved on this device yet.</p><p class="mute" id="srcLbl"></p>
     <p class="mute" style="margin:10px 0 6px">Nickname for the leaderboard</p>
     <p style="margin:0 0 12px"><input id="nick" maxlength="16" placeholder="Optional" aria-label="Nickname" style="font-size:1rem;width:100%"></p>
     <p class="mute" style="margin:0 0 6px">Practice difficulty</p>
     <div class="row" id="pDiffRow" style="margin-bottom:14px"><button class="alt" data-v="Easy">Easy</button><button class="alt" data-v="Normal">Normal</button><button class="alt" data-v="Hard">Hard</button></div>
-    <div class="row"><button id="goDaily">Start today’s dive</button><button class="alt" id="goPractice">Practice (random)</button><button class="alt" id="goSet">Settings</button><button class="alt hide" id="goAdmin">Admin</button></div>
+    <div class="row"><button id="goDaily">Start daily Quick Math</button><button class="alt" id="goPractice">Practice (random)</button><button class="alt" id="goSet">Settings</button><button class="alt hide" id="goAdmin">Admin</button></div>
   </div>
 </section>
 
@@ -107,6 +108,22 @@ section:not(.hide){animation:fade .3s ease}
   <button class="alt" id="stBack">Back to game</button>
 </section>
 
+<section id="review" class="hide">
+  <h1>Review answers</h1>
+  <p class="mute">Answers players gave that are not on a prompt's list. Type the standard name it should count as (for example "square"), then Accept, or Reject. Your decision applies to everyone from now on; earlier plays are not rescored.</p>
+  <div class="card"><div id="rvBox">Loading...</div><p id="rvMsg" class="mute"></p></div>
+  <button class="alt" id="rvBack">Back to admin</button>
+</section>
+
+<section id="divead" class="hide">
+  <h1>Math Dive prompts</h1>
+  <div class="card"><label class="mute">Date <input type="date" id="dvDate" style="font-size:1rem;margin-left:8px"></label>
+   <div id="dvRows" style="margin-top:12px"></div>
+   <div class="row" style="flex-wrap:wrap"><button id="dvSave">Save</button><button class="alt" id="dvFill">Fill from bank</button><button class="alt" id="dvWeek">Fill next 14 days</button><button class="alt" id="dvDel">Delete</button></div>
+   <p id="dvMsg" class="mute" style="margin-top:10px"></p></div>
+  <button class="alt" id="dvBack">Back to admin</button>
+</section>
+
 <section id="engine" class="hide">
   <h1>Engine</h1>
   <p class="mute">Sliders set how often each question type appears (0 turns it off). Saved changes apply to the daily dive and to practice for all players.</p>
@@ -134,7 +151,7 @@ section:not(.hide){animation:fade .3s ease}
   </div>
   <div class="card"><p><b>Player stats</b></p><div id="adStats" style="font-size:.92rem">Pick a date to see its stats.</div></div>
   <p><b>Saved dives</b></p><div id="adList" class="mute" style="margin-bottom:14px"></div>
-  <button class="alt" id="adEng">Engine settings</button> <button class="alt" id="adBack">Back to game</button>
+  <button class="alt" id="adRev">Review answers</button> <button class="alt" id="adDive">Math Dive prompts</button> <button class="alt" id="adEng">Engine settings</button> <button class="alt" id="adBack">Back to game</button>
 </section>
 
 <section id="end" class="hide">
@@ -153,6 +170,7 @@ section:not(.hide){animation:fade .3s ease}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="config.js"></script>
 <script src="engine.js"></script>
+<script src="divebank.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 let LIMIT=60;const N=7;
@@ -177,7 +195,7 @@ function pts(item,val,time){if(val===null)return 0;const d=Math.abs(val-item.a),
 
 let set,idx,score,log,tStart,raf,done,mode;
 const today=()=>new Date().toISOString().slice(0,10);
-function show(id){["start","game","end","admin","settings","engine"].forEach(s=>$(s).classList.toggle("hide",s!==id))}
+function show(id){["start","game","end","admin","settings","engine","divead","review"].forEach(s=>$(s).classList.toggle("hide",s!==id))}
 function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function save(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 function begin(m){mode=m;LIMIT=m==="daily"?60:ST.limit;set=(m==="daily"&&dailySet)?dailySet:build(m==="daily"?hash("mathdive"+today()):(Math.random()*1e9|0),m==="daily"?undefined:MD_ENGINE.presets[ST.diff]);idx=0;score=0;log=[];show("game");round()}
@@ -197,7 +215,7 @@ $("goDaily").onclick=()=>begin("daily");$("goPractice").onclick=()=>begin("pract
 $("sub").onclick=submit;$("ans").addEventListener("keydown",e=>{if(e.key==="Enter")submit()});
 $("nxt").onclick=()=>{if(idx===N-1){results()}else{idx++;round()}};
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&done&&!$("nxtWrap").classList.contains("hide")&&document.activeElement!==$("nxt")&&document.activeElement.tagName!=="TEXTAREA")$("nxt").click()});
-$("share").onclick=async()=>{const t=`Math Dive ${mode==="daily"?today():"practice"}: ${score} pts, ${log.filter(x=>x.ok).length}/${N} correct`;try{await navigator.clipboard.writeText(t);$("shareMsg").textContent="Copied. Paste it to a friend."}catch(e){$("shareMsg").textContent=t}};
+$("share").onclick=async()=>{const t=`Quick Math ${mode==="daily"?today():"practice"}: ${score} pts, ${log.filter(x=>x.ok).length}/${N} correct`;try{await navigator.clipboard.writeText(t);$("shareMsg").textContent="Copied. Paste it to a friend."}catch(e){$("shareMsg").textContent=t}};
 $("dateLbl").textContent=today();
 const b=load("md-best");if(b)$("bestLbl").textContent=`Your best daily score on this device: ${b}`;
 let dbh=null,dailySet=null;
@@ -320,7 +338,25 @@ $("padKeys").innerHTML=PADK.map(k=>`<button type="button" class="alt" style="pad
 $("padKeys").addEventListener("mousedown",e=>e.preventDefault());
 $("padKeys").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const t=$("padTx"),k=b.textContent,a=t.selectionStart,z=t.selectionEnd;t.value=t.value.slice(0,a)+k+t.value.slice(z);t.focus();t.selectionStart=t.selectionEnd=a+k.length});
 $("padClr").onclick=()=>{$("padTx").value=""};
-function makeDb(sb){const K={dives:["date","items"],plays:["uid","days"]};
+
+async function dvLoad(){const d=$("dvDate").value;if(!d)return;try{const sn=await dbh.doc("dive_prompts/"+d).get();dvRows(sn.exists?sn.data().items:null);$("dvMsg").textContent=sn.exists?"Loaded.":"Nothing saved for this date."}catch(e){$("dvMsg").textContent="Could not load."}}
+const bankPick=seed=>{const r=rng(seed),a=[...DIVE_BANK],o=[];while(o.length<7&&a.length)o.push(a.splice(Math.floor(r()*a.length),1)[0]);return o};
+$("adDive").onclick=()=>{$("dvDate").value=today();show("divead");dvRows(null);dvLoad()};
+$("dvDate").onchange=dvLoad;$("dvBack").onclick=()=>show("admin");
+$("dvFill").onclick=()=>{dvRows(bankPick((Math.random()*1e9)|0));$("dvMsg").textContent="Filled from the bank. Edit, then save."};
+$("dvSave").onclick=async()=>{const d=$("dvDate").value,items=[...document.querySelectorAll(".dq")].map((x,i)=>({p:x.value.trim(),a:document.querySelectorAll(".da")[i].value.trim()}));if(!d||items.some(x=>!x.p)){$("dvMsg").textContent="Pick a date and fill all 7 prompts.";return}
+ try{await dbh.doc("dive_prompts/"+d).set({items});$("dvMsg").textContent="Saved for "+d+"."}catch(e){$("dvMsg").textContent="Could not save."}};
+$("dvDel").onclick=async()=>{const d=$("dvDate").value;try{await dbh.doc("dive_prompts/"+d).delete();dvRows(null);$("dvMsg").textContent="Deleted "+d+"."}catch(e){$("dvMsg").textContent="Could not delete."}};
+$("dvWeek").onclick=async()=>{const d0=$("dvDate").value||today();let made=0;try{for(let i=0;i<14;i++){const t=new Date(d0+"T00:00:00Z");t.setUTCDate(t.getUTCDate()+i);const k=t.toISOString().slice(0,10),sn=await dbh.doc("dive_prompts/"+k).get();if(!sn.exists){await dbh.doc("dive_prompts/"+k).set({items:bankPick(hash("dive"+k))});made++}}$("dvMsg").textContent=`Filled ${made} empty day(s) from the bank.`}catch(e){$("dvMsg").textContent="Stopped early. Are you signed in as admin?"}};
+async function rvLoad(){const box=$("rvBox");box.textContent="Loading...";try{const{data,error}=await sb.from("verdicts").select("*");if(error)throw error;
+ const rows=(data||[]).filter(r=>r.v&&r.v.s==="pending");
+ box.innerHTML=rows.length?rows.map(r=>{const k=r.key,j=k.lastIndexOf("|"),p=k.slice(0,j),n=k.slice(j+1);return `<div style="border-bottom:1px solid var(--grid);padding:10px 0"><b>${esc(p)}</b><br>Answer: <b>${esc(r.v.raw||n)}</b><input class="rvc" data-k="${esc(k)}" value="${esc(n)}" aria-label="Standard name" style="font-size:.95rem;width:100%;margin:6px 0"><div class="row"><button data-acc="${esc(k)}" style="padding:8px 14px">Accept</button><button class="alt" data-rej="${esc(k)}" style="padding:8px 14px">Reject</button></div></div>`}).join(""):"Nothing to review."}catch(e){box.textContent="Could not load. Did you run setup3.sql?"}}
+$("rvBox").addEventListener("click",async e=>{const a=e.target.closest("[data-acc]"),r=e.target.closest("[data-rej]");if(!a&&!r)return;const key=a?a.dataset.acc:r.dataset.rej;let v;
+ if(a){const inp=[...document.querySelectorAll(".rvc")].find(x=>x.dataset.k===key),c=(inp&&inp.value||"").trim().toLowerCase();if(!c)return;v={s:"valid",canon:c}}else v={s:"invalid"};
+ const{error}=await sb.from("verdicts").upsert({key,v});$("rvMsg").textContent=error?"Could not save.":"";rvLoad()});
+$("adRev").onclick=()=>{show("review");rvLoad()};$("rvBack").onclick=()=>show("admin");
+function dvRows(it){const g=i=>{const x=it&&it[i];return x?(typeof x==="string"?{p:x,a:""}:x):{p:"",a:""}};$("dvRows").innerHTML=Array.from({length:7},(_,i)=>{const x=g(i);return `<div style="margin:10px 0"><input class="dq" style="font-size:1rem;width:100%" placeholder="Prompt ${i+1}, e.g. Name a four-sided shape" value="${esc(x.p)}"><input class="da" style="font-size:.9rem;width:100%;margin-top:4px" placeholder="Valid answers: square, rectangle, trapezoid/trapezium" value="${esc(x.a)}"></div>`}).join("")}
+function makeDb(sb){const K={dives:["date","items"],plays:["uid","days"],dive_prompts:["date","items"]};
  return{doc(path){const[t,id]=path.split("/"),[pk,col]=K[t];return{
   async get(){const{data,error}=await sb.from(t).select("*").eq(pk,id).maybeSingle();if(error)throw error;return{exists:!!data,data:()=>data?{[col]:data[col]}:undefined}},
   async set(v){const{error}=await sb.from(t).upsert({[pk]:id,[col]:v[col]});if(error)throw error},

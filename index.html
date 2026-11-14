@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Math Dive</title>
+<title>Quick Math</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;700&family=Manrope:wght@400;600;800&display=swap">
 <style>
 :root{--bg:#f6f4ee;--grid:#dcd8cb;--ink:#1c2541;--mute:#6a6f85;--accent:#2f4bd1;--hl:#ffe45c;--ok:#1c8a4f;--bad:#c4382f;--card:#fffdf8;
@@ -53,17 +53,18 @@ section:not(.hide){animation:fade .3s ease}
 <body>
 <main>
 <section id="start">
-  <h1>Math Dive</h1>
+  <a class="card" href="dive.html" style="display:block;text-decoration:none;color:var(--ink);margin-top:0"><b style="font-size:1.3rem">Math Dive</b> <span class="mute">daily</span><br><span class="mute">Name it. The rarer your answer, the deeper you dive.</span></a>
+  <h1>Quick Math</h1>
   <p>Seven hard equations. 60 seconds each. Whole-number answers only.</p>
   <p class="mute">Exact answer: 100 points. Off by 1: 85. Off by 2 to 10: 60. Further off: up to 55, based on how far you are in percent. Answer within the first 8 seconds for the full speed bonus of up to +50% (it fades to zero by 60 seconds), but only if you are within 10 of the answer. Further off, the bonus shrinks: up to +30% if you are within 10%, up to +10% if within 50%, and none beyond that. The same seven equations appear for everyone on the same day.</p>
   <div class="card">
-    <p><b>Today’s dive</b> <span class="mute" id="dateLbl"></span></p>
+    <p><b>Daily Quick Math</b> <span class="mute" id="dateLbl"></span></p>
     <p class="mute" id="bestLbl">No score saved on this device yet.</p><p class="mute" id="srcLbl"></p>
     <p class="mute" style="margin:10px 0 6px">Nickname for the leaderboard</p>
     <p style="margin:0 0 12px"><input id="nick" maxlength="16" placeholder="Optional" aria-label="Nickname" style="font-size:1rem;width:100%"></p>
     <p class="mute" style="margin:0 0 6px">Practice difficulty</p>
     <div class="row" id="pDiffRow" style="margin-bottom:14px"><button class="alt" data-v="Easy">Easy</button><button class="alt" data-v="Normal">Normal</button><button class="alt" data-v="Hard">Hard</button></div>
-    <div class="row"><button id="goDaily">Start today’s dive</button><button class="alt" id="goPractice">Practice (random)</button><button class="alt" id="goSet">Settings</button><button class="alt hide" id="goAdmin">Admin</button></div>
+    <div class="row"><button id="goDaily">Start daily Quick Math</button><button class="alt" id="goPractice">Practice (random)</button><button class="alt" id="goSet">Settings</button><button class="alt hide" id="goAdmin">Admin</button></div>
   </div>
 </section>
 
@@ -174,7 +175,7 @@ $("goDaily").onclick=()=>begin("daily");$("goPractice").onclick=()=>begin("pract
 $("sub").onclick=submit;$("ans").addEventListener("keydown",e=>{if(e.key==="Enter")submit()});
 $("nxt").onclick=()=>{if(idx===N-1){results()}else{idx++;round()}};
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&done&&!$("nxtWrap").classList.contains("hide")&&document.activeElement!==$("nxt")&&document.activeElement.tagName!=="TEXTAREA")$("nxt").click()});
-$("share").onclick=async()=>{const t=`Math Dive ${mode==="daily"?today():"practice"}: ${score} pts, ${log.filter(x=>x.ok).length}/${N} correct`;try{await navigator.clipboard.writeText(t);$("shareMsg").textContent="Copied. Paste it to a friend."}catch(e){$("shareMsg").textContent=t}};
+$("share").onclick=async()=>{const t=`Quick Math ${mode==="daily"?today():"practice"}: ${score} pts, ${log.filter(x=>x.ok).length}/${N} correct`;try{await navigator.clipboard.writeText(t);$("shareMsg").textContent="Copied. Paste it to a friend."}catch(e){$("shareMsg").textContent=t}};
 $("dateLbl").textContent=today();
 const b=load("md-best");if(b)$("bestLbl").textContent=`Your best daily score on this device: ${b}`;
 let dbh=null,dailySet=null;
