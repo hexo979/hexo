@@ -350,12 +350,24 @@ $("dvDel").onclick=async()=>{const d=$("dvDate").value;try{await dbh.doc("dive_p
 $("dvWeek").onclick=async()=>{const d0=$("dvDate").value||today();let made=0;try{for(let i=0;i<14;i++){const t=new Date(d0+"T00:00:00Z");t.setUTCDate(t.getUTCDate()+i);const k=t.toISOString().slice(0,10),sn=await dbh.doc("dive_prompts/"+k).get();if(!sn.exists){await dbh.doc("dive_prompts/"+k).set({items:bankPick(hash("dive"+k))});made++}}$("dvMsg").textContent=`Filled ${made} empty day(s) from the bank.`}catch(e){$("dvMsg").textContent="Stopped early. Are you signed in as admin?"}};
 async function rvLoad(){const box=$("rvBox");box.textContent="Loading...";try{const{data,error}=await sb.from("verdicts").select("*");if(error)throw error;
  const rows=(data||[]).filter(r=>r.v&&r.v.s==="pending");
- box.innerHTML=rows.length?rows.map(r=>{const k=r.key,j=k.lastIndexOf("|"),p=k.slice(0,j),n=k.slice(j+1);return `<div style="border-bottom:1px solid var(--grid);padding:10px 0"><b>${esc(p)}</b><br>Answer: <b>${esc(r.v.raw||n)}</b><input class="rvc" data-k="${esc(k)}" value="${esc(n)}" aria-label="Standard name" style="font-size:.95rem;width:100%;margin:6px 0"><div class="row"><button data-acc="${esc(k)}" style="padding:8px 14px">Accept</button><button class="alt" data-rej="${esc(k)}" style="padding:8px 14px">Reject</button></div></div>`}).join(""):"Nothing to review."}catch(e){box.textContent="Could not load. Did you run setup3.sql?"}}
+ box.innerHTML=rows.length?rows.map(r=>{const k=r.key,j=k.lastIndexOf("|"),p=k.slice(0,j),n=k.slice(j+1);return `<div style="border-bottom:1px solid var(--grid);padding:10px 0"><b>${esc(p)}</b><br>Answer: <b>${esc(r.v.raw||n)}</b><div class="wk mute" data-n="${esc(r.v.raw||n)}" data-p="${esc(p)}" style="font-size:.85rem;margin:4px 0">Checking Wikipedia...</div><input class="rvc" data-k="${esc(k)}" value="${esc(n)}" aria-label="Standard name" style="font-size:.95rem;width:100%;margin:6px 0"><div class="row"><button data-acc="${esc(k)}" style="padding:8px 14px">Accept</button><button class="alt" data-rej="${esc(k)}" style="padding:8px 14px">Reject</button></div></div>`}).join(""):"Nothing to review.";wkRun()}catch(e){box.textContent="Could not load. Did you run setup3.sql?"}}
 $("rvBox").addEventListener("click",async e=>{const a=e.target.closest("[data-acc]"),r=e.target.closest("[data-rej]");if(!a&&!r)return;const key=a?a.dataset.acc:r.dataset.rej;let v;
  if(a){const inp=[...document.querySelectorAll(".rvc")].find(x=>x.dataset.k===key),c=(inp&&inp.value||"").trim().toLowerCase();if(!c)return;v={s:"valid",canon:c}}else v={s:"invalid"};
  const{error}=await sb.from("verdicts").upsert({key,v});$("rvMsg").textContent=error?"Could not save.":"";rvLoad()});
 $("adRev").onclick=()=>{show("review");rvLoad()};$("rvBack").onclick=()=>show("admin");
 function dvRows(it){const g=i=>{const x=it&&it[i];return x?(typeof x==="string"?{p:x,a:""}:x):{p:"",a:""}};$("dvRows").innerHTML=Array.from({length:7},(_,i)=>{const x=g(i);return `<div style="margin:10px 0"><input class="dq" style="font-size:1rem;width:100%" placeholder="Prompt ${i+1}, e.g. Name a four-sided shape" value="${esc(x.p)}"><input class="da" style="font-size:.9rem;width:100%;margin-top:4px" placeholder="Valid answers: square, rectangle, trapezoid/trapezium" value="${esc(x.a)}"></div>`}).join("")}
+async function wkRun(){const els=[...document.querySelectorAll(".wk")].slice(0,15);
+ for(const el of els){const p=el.dataset.p,raw=el.dataset.n;try{
+  const r=await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(raw.trim().replace(/ /g,"_")));
+  if(!r.ok){el.textContent="Wikipedia: no page found for this answer.";continue}
+  const j=await r.json(),ex=(j.extract||"").toLowerCase();
+  if(j.type==="disambiguation"){el.textContent="Wikipedia: several meanings, check it yourself.";continue}
+  const bank=(window.DIVE_BANK||[]).find(b=>b.p===p),names=bank?bank.a.split(",").map(s=>s.split("/")[0].trim().toLowerCase()):[];
+  const hits=names.filter(nm=>nm.length>3&&ex.includes(nm)).slice(0,3);
+  const kw=p.toLowerCase().replace(/[^a-z ]/g," ").split(/\s+/).filter(w=>w.length>3&&!["name","type","that","with","used","some","kind"].includes(w)),kh=kw.filter(w=>ex.includes(w.replace(/s$/,"")));
+  const tag=hits.length?"Probably valid (mentions "+hits.join(", ")+")":kh.length?"Maybe (mentions "+kh.join(", ")+")":"Unclear";
+  el.innerHTML=`<b>${tag}</b><br><span class="mute">${esc(j.description||"")}${j.extract?": "+esc(j.extract.slice(0,150))+"...":""}</span>`
+ }catch(e){el.textContent="Wikipedia lookup failed."}}}
 function makeDb(sb){const K={dives:["date","items"],plays:["uid","days"],dive_prompts:["date","items"]};
  return{doc(path){const[t,id]=path.split("/"),[pk,col]=K[t];return{
   async get(){const{data,error}=await sb.from(t).select("*").eq(pk,id).maybeSingle();if(error)throw error;return{exists:!!data,data:()=>data?{[col]:data[col]}:undefined}},
