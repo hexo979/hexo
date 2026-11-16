@@ -72,6 +72,7 @@ section:not(.hide){animation:fade .3s ease}
 <section id="end" class="hide">
   <h1>Dive complete</h1>
   <div class="card"><div class="big" id="depth"></div><p class="mute" id="fin"></p><div id="sum"></div></div>
+  <div id="boards"></div>
   <p><a href="index.html" style="color:var(--accent)">Play Quick Math</a></p>
 </section>
 </main>
@@ -101,11 +102,18 @@ async function judge(text,i){const n=norm(text);if(!n)return{v:false,c:""};
  const key=ptext(i)+"|"+n,{data,error}=await sb.from("verdicts").select("v").eq("key",key).maybeSingle();if(error)throw error;
  if(data&&data.v){if(data.v.s==="valid")return{v:true,c:data.v.canon};if(data.v.s==="invalid")return{v:false,c:""};return{v:false,c:"",pending:true}}
  await sb.from("verdicts").insert({key,v:{s:"pending",raw:text.slice(0,40),date:D}});return{v:false,c:"",pending:true}}
+let rows=[];
+function boardsHtml(rec){const M={};rows.forEach(r=>{M[r.uid]={days:r.days||{}}});M[uid]=M[uid]||{days:{}};M[uid].days={...M[uid].days,[D]:rec};
+ const wk=[];for(let i=6;i>=0;i--){const t=new Date(D+"T00:00:00Z");t.setUTCDate(t.getUTCDate()-i);wk.push(t.toISOString().slice(0,10))}
+ const day=[],week=[];for(const id in M){const dd=M[id].days,me=id===uid;if(dd[D])day.push({n:dd[D].n,s:dd[D].s,me});let s=0,n="",c=0;wk.forEach(k=>{if(dd[k]){s+=dd[k].s;c++;if(dd[k].n)n=dd[k].n}});if(c)week.push({n,s,me})}
+ const tbl=(t,a)=>{a.sort((x,y)=>y.s-x.s);const m=a.findIndex(x=>x.me);return `<div class="card"><p><b>${t}</b></p><table>`+a.slice(0,10).map((x,i)=>`<tr><td style="width:2em">${i+1}</td><td>${esc(x.n||"Anonymous")}${x.me?" (you)":""}</td><td style="text-align:right"><b>${x.s*10} m</b></td></tr>`).join("")+`</table>`+(m>=10?`<p class="mute" style="margin-top:8px">Your rank: #${m+1} of ${a.length}</p>`:"")+`</div>`};
+ const avg=day.length?Math.round(day.reduce((t,x)=>t+x.s,0)/day.length*10):0;
+ return `<p class="mute">${day.length} player${day.length===1?"":"s"} today &middot; average depth ${avg} m</p>`+tbl("Today",day)+tbl("Last 7 days (total depth)",week)}
 async function boot(){try{let{data:{session}}=await sb.auth.getSession();if(!session)session=(await sb.auth.signInAnonymously()).data.session;uid=session.user.id;
  const p=await sb.from("dive_prompts").select("items").eq("date",D).maybeSingle();prompts=p.data&&p.data.items;
  if(!prompts){$("stat").textContent="No dive has been set for today yet. Check back soon.";return}
  cnt=prompts.map(()=>({}));tot=prompts.map(()=>0);
- const pl=await sb.from("dive_plays").select("*");(pl.data||[]).forEach(row=>{const r=(row.days||{})[D];if(!r)return;if(row.uid===uid)mine=r;(r.r||[]).forEach((x,i)=>{if(x&&x.v&&x.c&&i<N){cnt[i][x.c]=(cnt[i][x.c]||0)+1;tot[i]++}})});
+ const pl=await sb.from("dive_plays").select("*");rows=pl.data||[];(pl.data||[]).forEach(row=>{const r=(row.days||{})[D];if(!r)return;if(row.uid===uid)mine=r;(r.r||[]).forEach((x,i)=>{if(x&&x.v&&x.c&&i<N){cnt[i][x.c]=(cnt[i][x.c]||0)+1;tot[i]++}})});
  if(mine){showEnd(mine,true);return}
  $("stat").textContent="Today\u2019s dive is ready: "+D;$("go").disabled=false}catch(e){$("stat").textContent="Could not load. Check config.js and the setup steps."}}
 $("go").onclick=()=>{idx=0;score=0;log=[];show("game");round()};
@@ -122,7 +130,7 @@ $("nxt").onclick=async()=>{if(idx<N-1){idx++;round();return}
  const rec={s:score,n:(ST.nick||"").slice(0,16),r:log};
  try{const o=await sb.from("dive_plays").select("days").eq("uid",uid).maybeSingle(),days=(o.data&&o.data.days)||{};if(!days[D]){days[D]=rec;await sb.from("dive_plays").upsert({uid,days})}}catch(e){}
  log.forEach((x,i)=>{if(x.v&&x.c){cnt[i][x.c]=(cnt[i][x.c]||0)+1;tot[i]++}});showEnd(rec,false)};
-function showEnd(rec,again){show("end");$("depth").textContent=rec.s*10+" m";$("fin").textContent=again?"You already dived today. Come back tomorrow.":"Deepest answers are the rarest ones.";
+function showEnd(rec,again){show("end");$("boards").innerHTML=boardsHtml(rec);$("depth").textContent=rec.s*10+" m";$("fin").textContent=again?"You already dived today. Come back tomorrow.":"Deepest answers are the rarest ones.";
  $("sum").innerHTML=rec.r.map((x,i)=>{const top=Object.entries(cnt[i]||{}).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k,c])=>`${esc(k)} (${Math.round(100*c/Math.max(1,tot[i]))}%)`).join(", ");
   return `<p style="margin:10px 0"><b>${esc(ptext(i))}</b><br>You: ${x.t?esc(x.t):"no answer"} ${x.v?"&rarr; "+esc(x.c)+" &middot; +"+x.s*10+" m":x.p?"(under review)":x.v===null?"(could not be checked)":"(not accepted)"}<br><span class="mute">Top answers: ${top||"none yet"}</span></p>`}).join("")}
 boot();

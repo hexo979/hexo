@@ -406,5 +406,165 @@ window.DIVE_BANK=[
 {
 "p": "Name a way to measure the size of a shape",
 "a": "area, perimeter, volume, circumference, surface area, diagonal, length, width, height, diameter, radius, depth, breadth"
+},
+{
+"p": "Name a mathematician from the 19th century",
+"a": "gauss, riemann, galois, cantor, abel, boole, hamilton, cauchy, weierstrass, lobachevsky, dedekind, poincare, jacobi, fourier, babbage, cayley, sylvester, hermite, klein, lie, ada lovelace/lovelace"
+},
+{
+"p": "Name a Renaissance mathematician",
+"a": "cardano, tartaglia, fibonacci, vieta/viete, napier, descartes, fermat, pascal, galileo, kepler, stevin, recorde, regiomontanus, pacioli, bombelli, leonardo da vinci/da vinci"
+},
+{
+"p": "Name an Indian mathematician",
+"a": "ramanujan, aryabhata, brahmagupta, bhaskara, mahavira, madhava, kaprekar, shakuntala devi, varahamihira, harish chandra, c r rao, narayana pandit"
+},
+{
+"p": "Name a mathematician from the Islamic Golden Age",
+"a": "al khwarizmi/khwarizmi, al kindi, omar khayyam/khayyam, al biruni, ibn al haytham/alhazen, al tusi, al karaji, thabit ibn qurra, al battani, abu kamil"
+},
+{
+"p": "Name a Fields Medal winner",
+"a": "maryam mirzakhani/mirzakhani, terence tao/tao, grigori perelman/perelman, alexander grothendieck/grothendieck, john milnor/milnor, michael atiyah/atiyah, paul cohen, stephen smale/smale, edward witten/witten, cedric villani/villani, june huh, maryna viazovska/viazovska, peter scholze/scholze, manjul bhargava/bhargava, martin hairer/hairer, artur avila, james maynard/maynard"
+},
+{
+"p": "Name a way to write a number",
+"a": "decimal, fraction, percentage/percent, binary, roman numeral, words, scientific notation/standard form, expanded form, tally marks/tally, number line, place value chart, ratio, base ten, hexadecimal"
+},
+{
+"p": "Name a type of decimal",
+"a": "terminating, repeating/recurring, non terminating, non repeating, irrational, rounded, finite, infinite"
+},
+{
+"p": "Name a way to round a number",
+"a": "nearest, round up/ceiling, round down/floor, truncation/truncate, significant figures, decimal places, round half up, round half even/bankers rounding, nearest ten, nearest hundred, nearest whole number"
+},
+{
+"p": "Name a rule for the order of operations",
+"a": "pemdas, bodmas, bidmas, brackets, parentheses, exponents, orders, multiplication, division, addition, subtraction, left to right, indices"
+},
+{
+"p": "Name a type of ratio or rate",
+"a": "speed, density, unit rate, percentage, proportion, slope/gradient, golden ratio, scale, unit price, interest rate, exchange rate, heart rate, miles per gallon/mpg, pace, price per kilogram"
+},
+{
+"p": "Name a type of matrix",
+"a": "identity, zero/null, square, diagonal, symmetric, row, column, triangular, inverse, singular, orthogonal, transpose, augmented, scalar, sparse, rectangular"
+},
+{
+"p": "Name a vector term",
+"a": "magnitude, direction, scalar, unit vector, dot product, cross product, component, resultant, displacement, position vector, zero vector, basis vector, projection"
+},
+{
+"p": "Name a linear algebra concept",
+"a": "matrix, vector, determinant, eigenvalue, eigenvector, rank, basis, span, dimension, transpose, inverse, kernel/null space, linear transformation, orthogonal, trace, linear independence"
+},
+{
+"p": "Name a complex number term",
+"a": "real part, imaginary part, conjugate, modulus, argument, i, polar form, argand diagram, eulers formula, rectangular form, imaginary unit, magnitude, phase"
+},
+{
+"p": "Name a coordinate system",
+"a": "cartesian/rectangular, polar, cylindrical, spherical, number line, complex plane, geographic, barycentric, homogeneous, grid"
+},
+{
+"p": "Name a tool for measuring",
+"a": "ruler, tape measure, protractor, scale, calipers/vernier caliper, micrometer, thermometer, stopwatch/timer, measuring cup, trundle wheel, clock, odometer, speedometer, barometer, ammeter, voltmeter, measuring jug"
+},
+{
+"p": "Name a geometry theorem or rule",
+"a": "pythagorean theorem/pythagoras, thales theorem/thales, angle sum, exterior angle theorem, sine rule/law of sines, cosine rule/law of cosines, similar triangles, congruence, triangle inequality, alternate angles, inscribed angle theorem, circle theorems, picks theorem, ptolemys theorem"
+},
+{
+"p": "Name a triangle congruence rule",
+"a": "sss, sas, asa, aas, rhs/hl/hypotenuse leg, side side side, side angle side, angle side angle"
+},
+{
+"p": "Name a Greek letter used in math",
+"a": "pi, theta, alpha, beta, gamma, delta, epsilon, lambda, mu, sigma, omega, phi, rho, tau, psi, eta, zeta, kappa, nu, xi, chi, upsilon, iota"
+},
+{
+"p": "Name an irrational number",
+"a": "pi, e, root 2/square root of 2/sqrt 2, golden ratio/phi, root 3, root 5, ln 2, root 7, cube root of 2, euler mascheroni constant"
+},
+{
+"p": "Name a type of fractal",
+"a": "mandelbrot set/mandelbrot, julia set/julia, sierpinski triangle/sierpinski, koch snowflake/koch curve, menger sponge, cantor set, dragon curve, barnsley fern, hilbert curve, romanesco broccoli/romanesco"
+},
+{
+"p": "Name something in nature that shows a math pattern",
+"a": "honeycomb, spiral shell/nautilus, sunflower, snowflake, fractal, tree branches, pinecone, leaf arrangement, waves, stripes, spider web, fern, pineapple, galaxy, hurricane, lightning, river delta, zebra"
+},
+{
+"p": "Name an algebraic structure",
+"a": "group, ring, field, vector space, module, monoid, lattice, algebra, semigroup, boolean algebra, magma, abelian group"
+},
+{
+"p": "Name a type of graph in graph theory",
+"a": "tree, cycle, complete graph/complete, bipartite, directed, undirected, weighted, planar, connected, path, star, wheel, hypercube, petersen graph/petersen, forest"
+},
+{
+"p": "Name a graph theory term",
+"a": "vertex/node, edge/link, degree, path, cycle, tree, weight, connected, adjacent, subgraph, component, euler path/eulerian path, hamiltonian cycle, network, loop"
+},
+{
+"p": "Name a number theory concept",
+"a": "prime, divisibility, gcd/greatest common divisor, lcm/least common multiple, modulo/modular arithmetic, congruence, factorization/prime factorization, coprime/relatively prime, eulers totient/totient, diophantine equation, perfect number, quadratic residue, fermats little theorem, sieve"
+},
+{
+"p": "Name a combinatorics term",
+"a": "permutation, combination, factorial, binomial coefficient, pascals triangle/pascal triangle, arrangement, pigeonhole principle, inclusion exclusion, catalan number, derangement, partition, stirling number, tree diagram, counting principle"
+},
+{
+"p": "Name a tool used for calculating",
+"a": "abacus, calculator, slide rule, computer, napiers bones, spreadsheet, graphing calculator, pascaline, difference engine, log tables/logarithm tables, smartphone, fingers, tally sticks, counting board"
+},
+{
+"p": "Name an ancient number system",
+"a": "roman, babylonian, egyptian, mayan, greek, chinese, hindu arabic/arabic, sumerian, inca/quipu, attic, hebrew, aztec, etruscan, roman numerals"
+},
+{
+"p": "Name a use of math in technology",
+"a": "cryptography/encryption, gps, compression, machine learning, graphics, ai/artificial intelligence, search engines, error correction, simulation, robotics, cybersecurity, databases, video games, weather forecasting, cell phones, streaming, medical imaging"
+},
+{
+"p": "Name a button on a calculator",
+"a": "sin, cos, tan, log, ln, square root, percent, memory, reciprocal, factorial, power, pi, clear, equals, ans, exponent, plus, minus, times, divide, delete, decimal point, brackets"
+},
+{
+"p": "Name a spreadsheet function",
+"a": "sum, average, count, max, min, if, vlookup, round, product, median, concatenate, countif, sumif, today, power, abs, sort, filter, xlookup"
+},
+{
+"p": "Name a shape that can tile a flat surface",
+"a": "square, equilateral triangle/triangle, hexagon, rectangle, parallelogram, rhombus, trapezoid/trapezium, kite, regular hexagon, brick, right triangle"
+},
+{
+"p": "Name a real-life sphere",
+"a": "ball, globe, earth, orange, marble, bubble, planet, moon, sun, bowling ball, basketball, soccer ball/football, tennis ball, pearl, eyeball, grape, cannonball, snow globe"
+},
+{
+"p": "Name a real-life cube",
+"a": "dice/die, ice cube, rubiks cube, sugar cube, box, building block, cube, stock cube, tissue box, cube lamp, speaker, toy block, sugar"
+},
+{
+"p": "Name a real-life cylinder",
+"a": "can, pipe, cup, battery, candle, tube, barrel, drum, pillar/column, roll, pencil, glass, bottle, tin, tank, toilet paper roll, rolling pin, bucket, straw, soda can"
+},
+{
+"p": "Name a real-life cone",
+"a": "ice cream cone, traffic cone, party hat, funnel, volcano, teepee/tipi, witch hat, cone, megaphone, pine tree, wizard hat, rocket nose, waffle cone, spinning top"
+},
+{
+"p": "Name a real-life rectangle",
+"a": "door, window, phone, book, table, television/tv, screen, paper, card, tile, bed, flag, envelope, picture frame, whiteboard, brick, notebook, laptop, football pitch, desk"
+},
+{
+"p": "Name a real-life circle",
+"a": "clock, wheel, coin, plate, pizza, ring, button, cd/dvd/disc, frisbee, tire/tyre, moon, record, manhole cover, steering wheel, pancake, bangle, donut, cookie"
+},
+{
+"p": "Name a real-life triangle",
+"a": "yield sign/traffic sign, pizza slice, roof, pyramid, sail, pennant, slice of cake, tortilla chip, warning sign, tent, triangle instrument, flag, nacho, bunting, clothes hanger, sandwich"
 }
 ];
