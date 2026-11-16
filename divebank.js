@@ -9,7 +9,7 @@ window.DIVE_BANK=[
 },
 {
 "p": "Name a 3D shape",
-"a": "cube, sphere, cylinder, cone, pyramid, prism, cuboid, torus, tetrahedron, octahedron, dodecahedron, icosahedron, hemisphere, ellipsoid, rectangular prism/box, triangular prism"
+"a": "cube, sphere, cylinder, cone, pyramid, prism, cuboid, torus, tetrahedron, octahedron, dodecahedron, icosahedron, hemisphere, ellipsoid, rectangular prism/box, triangular prism, hemisphere, square pyramid, triangular pyramid, hexagonal prism, pentagonal prism, frustum, capsule, spheroid, paraboloid, ovoid, trapezoidal prism, rhombic dodecahedron, truncated icosahedron, mobius strip, oblate spheroid, tetrahedron, cuboid, prism, cone, cylinder"
 },
 {
 "p": "Name a type of angle",
@@ -25,15 +25,15 @@ window.DIVE_BANK=[
 },
 {
 "p": "Name a branch of mathematics",
-"a": "algebra, geometry, calculus, trigonometry, statistics, probability, arithmetic, number theory, topology, analysis, combinatorics, logic, set theory, discrete mathematics/discrete math, linear algebra, graph theory"
+"a": "algebra, geometry, calculus, trigonometry, statistics, probability, arithmetic, number theory, topology, analysis, combinatorics, logic, set theory, discrete mathematics/discrete math, linear algebra, graph theory, differential equations, real analysis, complex analysis, abstract algebra, group theory, game theory, information theory, measure theory, numerical analysis, differential geometry, algebraic geometry, mathematical logic, applied mathematics, pure mathematics, optimization, cryptography, dynamical systems, chaos theory, category theory, functional analysis, fractal geometry, actuarial science, mathematical physics"
 },
 {
 "p": "Name a famous mathematician",
-"a": "euclid, pythagoras, newton, gauss, euler, archimedes, riemann, fermat, descartes, leibniz, turing, ramanujan, fibonacci, hilbert, pascal, noether, cantor, godel, galois, lagrange, laplace, hypatia, al khwarizmi/khwarizmi, thales, bernoulli, poincare, kovalevskaya, erdos, tao"
+"a": "euclid, pythagoras, newton, gauss, euler, archimedes, riemann, fermat, descartes, leibniz, turing, ramanujan, fibonacci, hilbert, pascal, noether, cantor, godel, galois, lagrange, laplace, hypatia, al khwarizmi/khwarizmi, thales, bernoulli, poincare, kovalevskaya, erdos, tao, boole, hamilton, cauchy, abel, banach, dirichlet, jacobi, cayley, dedekind, minkowski, weierstrass, nash, perelman, tao, mirzakhani, napier, cardano, tartaglia, eratosthenes, apollonius, diophantus, brahmagupta, aryabhata, omar khayyam, bayes, markov, kolmogorov, lobachevsky, klein, lie, ptolemy, hardy, conway, shannon, mandelbrot, wiles"
 },
 {
 "p": "Name a type of number",
-"a": "integer, natural, whole, rational, irrational, real, complex, imaginary, prime, composite, even, odd, square, cube, negative, positive, decimal, perfect, triangular, transcendental, algebraic, cardinal, ordinal, fibonacci, binary"
+"a": "integer, natural, whole, rational, irrational, real, complex, imaginary, prime, composite, even, odd, square, cube, negative, positive, decimal, perfect, triangular, transcendental, algebraic, cardinal, ordinal, fibonacci, binary, whole numbers, natural numbers, rational numbers, real numbers, complex numbers, surd, prime numbers, composite numbers, even numbers, odd numbers, square numbers, cube numbers, triangular numbers, perfect numbers, amicable, palindromic, mixed number, negative number, positive number, hyperreal, surreal, quaternion, p adic, googol"
 },
 {
 "p": "Name a math operation",
@@ -69,7 +69,7 @@ window.DIVE_BANK=[
 },
 {
 "p": "Name a metric unit of length",
-"a": "meter/metre, centimeter/centimetre, millimeter/millimetre, kilometer/kilometre, decimeter/decimetre, micrometer/micron, nanometer, hectometer, decameter/dekameter, picometer"
+"a": "meter/metre, centimeter/centimetre, millimeter/millimetre, kilometer/kilometre, decimeter/decimetre, micrometer/micron, nanometer, hectometer, decameter/dekameter, picometer, m, cm, mm, km, um, nm, dm, hm, dam, angstrom, fermi, light year"
 },
 {
 "p": "Name a math symbol",
@@ -113,39 +113,39 @@ window.DIVE_BANK=[
 },
 {
 "p": "Name a female mathematician",
-"a": "emmy noether/noether, ada lovelace/lovelace, hypatia, sophie germain/germain, maryam mirzakhani/mirzakhani, katherine johnson, sofya kovalevskaya/kovalevskaya, maria agnesi/agnesi, emilie du chatelet, julia robinson, karen uhlenbeck, florence nightingale, dorothy vaughan, mary jackson, joan clarke, mary somerville"
+"a": "emmy noether/noether, ada lovelace/lovelace, hypatia, sophie germain/germain, maryam mirzakhani/mirzakhani, katherine johnson, sofya kovalevskaya/kovalevskaya, maria agnesi/agnesi, emilie du chatelet, julia robinson, karen uhlenbeck, florence nightingale, dorothy vaughan, mary jackson, joan clarke, mary somerville, ada, emmy, sophie, maryam, katherine, grace hopper/hopper, ingrid daubechies/daubechies, margaret hamilton, evelyn boyd granville, annie easley, mary cartwright, olga taussky todd, cathleen morawetz, emma castelnuovo, kathleen ollerenshaw, eugenia cheng, hannah fry, hedy lamarr, shakuntala devi, sofia kovalevskaya, mary jackson, joan clarke"
 },
 {
 "p": "Name an ancient Greek mathematician",
-"a": "euclid, pythagoras, archimedes, thales, eratosthenes, apollonius, hipparchus, diophantus, hypatia, zeno, heron/hero, ptolemy, eudoxus, pappus, hippocrates, anaxagoras, theon"
+"a": "euclid, pythagoras, archimedes, thales, eratosthenes, apollonius, hipparchus, diophantus, hypatia, zeno, heron/hero, ptolemy, eudoxus, pappus, hippocrates, anaxagoras, theon, plato, aristotle, theaetetus, menaechmus, nicomachus, proclus, autolycus, aristarchus, hypsicles, anaximander, democritus, eutocius, geminus, thymaridas, philolaus, archytas"
 },
 {
 "p": "Name a 20th century mathematician",
-"a": "alan turing/turing, kurt godel/godel, john von neumann/von neumann, srinivasa ramanujan/ramanujan, paul erdos/erdos, david hilbert/hilbert, emmy noether/noether, john nash/nash, g h hardy/hardy, andrew wiles/wiles, kolmogorov, claude shannon/shannon, grothendieck, john conway/conway, mandelbrot, norbert wiener/wiener"
+"a": "alan turing/turing, kurt godel/godel, john von neumann/von neumann, srinivasa ramanujan/ramanujan, paul erdos/erdos, david hilbert/hilbert, emmy noether/noether, john nash/nash, g h hardy/hardy, andrew wiles/wiles, kolmogorov, claude shannon/shannon, grothendieck, john conway/conway, mandelbrot, norbert wiener/wiener, littlewood, weyl, banach, serre, atiyah, penrose, thurston, smale, milnor, cohen, tarski, church, kleene, post, zermelo, fraenkel, lebesgue, borel, hadamard, courant, polya, birkhoff, mac lane, bourbaki, ulam, feynman"
 },
 {
 "p": "Name a mathematician who worked on probability",
-"a": "pascal, fermat, bernoulli, laplace, bayes, kolmogorov, markov, gauss, poisson, cardano, de moivre, chebyshev, fisher"
+"a": "pascal, fermat, bernoulli, laplace, bayes, kolmogorov, markov, gauss, poisson, cardano, de moivre, chebyshev, fisher, huygens, jacob bernoulli, de moivre, gosset/student, pearson, galton, borel, cramer, feller, doob, levy, wald, savage, de finetti, ramsey, ulam"
 },
 {
 "p": "Name a mathematician known for geometry",
-"a": "euclid, descartes, riemann, lobachevsky, gauss, bolyai, hilbert, klein, poincare, apollonius, archimedes, thales, pythagoras, mobius, desargues, coxeter"
+"a": "euclid, descartes, riemann, lobachevsky, gauss, bolyai, hilbert, klein, poincare, apollonius, archimedes, thales, pythagoras, mobius, desargues, coxeter, poncelet, steiner, monge, thurston, felix klein, heron, brahmagupta, fermat, brianchon, apollonius of perga, hippasus, menelaus, ceva, bolyai, euler, kepler, pappus, gauss, hilbert"
 },
 {
 "p": "Name a mathematician known for calculus",
-"a": "newton, leibniz, cauchy, riemann, euler, lagrange, bernoulli, weierstrass, archimedes, fermat, lebesgue, maclaurin, taylor, barrow"
+"a": "newton, leibniz, cauchy, riemann, euler, lagrange, bernoulli, weierstrass, archimedes, fermat, lebesgue, maclaurin, taylor, barrow, wallis, l hopital/lhopital, madhava, eudoxus, cavalieri, torricelli, kepler, fourier, jacobi, gauss, hamilton, hadamard, darboux, dirichlet, abel, bolzano"
 },
 {
 "p": "Name a mathematician with a theorem named after them",
-"a": "pythagoras, fermat, bayes, gauss, euler, noether, godel, thales, cantor, fubini, rolle, green, stokes, pascal, ptolemy, wilson, lagrange, cauchy, ceva, menelaus, bezout"
+"a": "pythagoras, fermat, bayes, gauss, euler, noether, godel, thales, cantor, fubini, rolle, green, stokes, pascal, ptolemy, wilson, lagrange, cauchy, ceva, menelaus, bezout, bolzano, weierstrass, hahn, banach, brouwer, jordan, desargues, brianchon, pick, tonelli, sylow, cayley, hamilton, hurwitz, minkowski, dirichlet, abel, galois, hilbert, lagrange, ramsey, kuratowski, cook, bayes"
 },
 {
 "p": "Name a scientist who used a lot of mathematics",
-"a": "newton, einstein, galileo, kepler, hawking, feynman, maxwell, laplace, copernicus, bohr, schrodinger, heisenberg, faraday, planck, dirac, tesla, hubble, darwin"
+"a": "newton, einstein, galileo, kepler, hawking, feynman, maxwell, laplace, copernicus, bohr, schrodinger, heisenberg, faraday, planck, dirac, tesla, hubble, darwin, boltzmann, born, fermi, oppenheimer, curie, rutherford, kelvin, lorentz, turing, babbage, lovelace, penrose, sagan, brahe, huygens, hooke, boyle, noether, gibbs, hamilton, lagrange, euler, gauss, bernoulli, pascal, descartes"
 },
 {
 "p": "Name a famous math theorem",
-"a": "pythagorean theorem/pythagoras, fermats last theorem/fermat, fundamental theorem of calculus, fundamental theorem of algebra, binomial theorem, central limit theorem, bayes theorem/bayes, godels incompleteness theorem/incompleteness, four color theorem, prime number theorem, intermediate value theorem, mean value theorem, remainder theorem, factor theorem, law of cosines, law of sines"
+"a": "pythagorean theorem/pythagoras, fermats last theorem/fermat, fundamental theorem of calculus, fundamental theorem of algebra, binomial theorem, central limit theorem, bayes theorem/bayes, godels incompleteness theorem/incompleteness, four color theorem, prime number theorem, intermediate value theorem, mean value theorem, remainder theorem, factor theorem, law of cosines, law of sines, euclids theorem, fermats little theorem, fundamental theorem of arithmetic, noether theorem, bolzano weierstrass, heine borel, rolles theorem, green theorem, stokes theorem, divergence theorem, brouwer fixed point, banach fixed point, lagrange theorem, sylow theorem, cayley hamilton, ceva theorem, menelaus theorem, wilson theorem, chinese remainder theorem, de moivre theorem, euler theorem, triangle inequality"
 },
 {
 "p": "Name an unsolved math problem",
@@ -309,19 +309,19 @@ window.DIVE_BANK=[
 },
 {
 "p": "Name a unit of mass",
-"a": "gram, kilogram, milligram, tonne/ton/metric ton, pound, ounce, stone, microgram, carat, slug, grain, hundredweight"
+"a": "gram, kilogram, milligram, tonne/ton/metric ton, pound, ounce, stone, microgram, carat, slug, grain, hundredweight, kg, g, mg, lb, oz, ton, quintal, dram, atomic mass unit/amu/dalton, dekagram, hectogram"
 },
 {
 "p": "Name a unit of volume",
-"a": "liter/litre, milliliter/millilitre, cubic meter/cubic metre, gallon, pint, quart, cup, teaspoon, tablespoon, fluid ounce, cubic centimeter/cubic centimetre, barrel, cubic inch, cubic foot"
+"a": "liter/litre, milliliter/millilitre, cubic meter/cubic metre, gallon, pint, quart, cup, teaspoon, tablespoon, fluid ounce, cubic centimeter/cubic centimetre, barrel, cubic inch, cubic foot, ml, l, cl, dl, hl, m3, cm3, fl oz, tsp, tbsp, bushel, cubic yard, cubic millimeter/cubic millimetre, jigger, peck, gill"
 },
 {
 "p": "Name a unit of time",
-"a": "second, minute, hour, day, week, month, year, decade, century, millennium, millisecond, microsecond, nanosecond, fortnight, leap year, season"
+"a": "second, minute, hour, day, week, month, year, decade, century, millennium, millisecond, microsecond, nanosecond, fortnight, leap year, season, ms, sec, min, hr, jiffy, shake, planck time, lustrum, eon, era, age, semester, quarter, moment, instant"
 },
 {
 "p": "Name an imperial unit of length",
-"a": "inch, foot/feet, yard, mile, thou, furlong, chain, league, fathom, nautical mile, rod, hand"
+"a": "inch, foot/feet, yard, mile, thou, furlong, chain, league, fathom, nautical mile, rod, hand, in, ft, yd, mi, mil, link, perch, pole, cable, span, cubit, barleycorn, point, pica, league"
 },
 {
 "p": "Name a unit of temperature",
@@ -349,7 +349,7 @@ window.DIVE_BANK=[
 },
 {
 "p": "Name a programming language used in math",
-"a": "python, matlab, r, julia, mathematica/wolfram, sage/sagemath, c, fortran, java, maple, javascript, excel, haskell, octave, scala"
+"a": "python, matlab, r, julia, mathematica/wolfram, sage/sagemath, c, fortran, java, maple, javascript, excel, haskell, octave, scala, sas, spss, stata, scilab, gap, magma, lisp, rust, go, sql, maxima, lean, coq, isabelle, wolfram language, typescript, c++, c#, matlab, numpy"
 },
 {
 "p": "Name a base used in computing",
@@ -361,11 +361,11 @@ window.DIVE_BANK=[
 },
 {
 "p": "Name a famous algorithm",
-"a": "euclidean algorithm/euclid, sieve of eratosthenes/sieve, bubble sort, quicksort, dijkstra, binary search, newtons method, gaussian elimination, fast fourier transform/fft, rsa, pagerank, merge sort, a star, binary"
+"a": "euclidean algorithm/euclid, sieve of eratosthenes/sieve, bubble sort, quicksort, dijkstra, binary search, newtons method, gaussian elimination, fast fourier transform/fft, rsa, pagerank, merge sort, a star, binary, bellman ford, kruskal, prim, floyd warshall, heapsort, insertion sort, selection sort, linear search, newton raphson, gradient descent, k means, backpropagation, diffie hellman, sha, md5, huffman coding, lzw, gauss jordan, simplex, monte carlo, breadth first search/bfs, depth first search/dfs, shor, grover, knapsack"
 },
 {
 "p": "Name a job that uses math",
-"a": "engineer, accountant, teacher, scientist, programmer, architect, statistician, actuary, pilot, banker, economist, data scientist, carpenter, nurse, surveyor, physicist, cashier, mathematician, designer, analyst, builder, chef, doctor, programmer"
+"a": "engineer, accountant, teacher, scientist, programmer, architect, statistician, actuary, pilot, banker, economist, data scientist, carpenter, nurse, surveyor, physicist, cashier, mathematician, designer, analyst, builder, chef, doctor, programmer, software developer, data analyst, auditor, tax advisor, mechanic, electrician, plumber, tailor, farmer, navigator, air traffic controller, pharmacist, dentist, baker, barista, shopkeeper, bank teller, stockbroker, trader, insurance agent, lab technician, professor, researcher, cryptographer, game developer, animator, graphic designer, surveyor, astronomer, meteorologist, computer scientist, bookkeeper"
 },
 {
 "p": "Name a place where you use fractions",
@@ -377,7 +377,7 @@ window.DIVE_BANK=[
 },
 {
 "p": "Name a game that uses math",
-"a": "chess, monopoly, sudoku, poker, dice, bingo, yahtzee, backgammon, blackjack, scrabble, darts, cribbage, checkers, go, risk, dominoes"
+"a": "chess, monopoly, sudoku, poker, dice, bingo, yahtzee, backgammon, blackjack, scrabble, darts, cribbage, checkers, go, risk, dominoes, uno, rummy, tetris, minesweeper, 2048, kakuro, bridge, roulette, craps, mahjong, shogi, connect four, battleship, mastermind, snooker, billiards, pool, catan, rubiks cube, civilization, minecraft, nim, hex, othello, reversi"
 },
 {
 "p": "Name a financial math term",
@@ -541,30 +541,30 @@ window.DIVE_BANK=[
 },
 {
 "p": "Name a real-life sphere",
-"a": "ball, globe, earth, orange, marble, bubble, planet, moon, sun, bowling ball, basketball, soccer ball/football, tennis ball, pearl, eyeball, grape, cannonball, snow globe"
+"a": "ball, globe, earth, orange, marble, bubble, planet, moon, sun, bowling ball, basketball, soccer ball/football, tennis ball, pearl, eyeball, grape, cannonball, snow globe, bead, ball bearing, droplet, apple, peach, plum, cherry, tomato, melon, watermelon, golf ball, ping pong ball, baseball, billiard ball, crystal ball, bauble, jupiter, mars, pea, snowball, meatball, balloon, lollipop, gobstopper"
 },
 {
 "p": "Name a real-life cube",
-"a": "dice/die, ice cube, rubiks cube, sugar cube, box, building block, cube, stock cube, tissue box, cube lamp, speaker, toy block, sugar"
+"a": "dice/die, ice cube, rubiks cube, sugar cube, box, building block, cube, stock cube, tissue box, cube lamp, speaker, toy block, sugar, block, crate, gift box, jewelry box, ice, bouillon cube, cube puzzle, cardboard box, storage box, tofu, cheese cube, minecraft block, tissue box, lego brick, dice cube, rubiks, sugar lump"
 },
 {
 "p": "Name a real-life cylinder",
-"a": "can, pipe, cup, battery, candle, tube, barrel, drum, pillar/column, roll, pencil, glass, bottle, tin, tank, toilet paper roll, rolling pin, bucket, straw, soda can"
+"a": "can, pipe, cup, battery, candle, tube, barrel, drum, pillar/column, roll, pencil, glass, bottle, tin, tank, toilet paper roll, rolling pin, bucket, straw, soda can, tin can, drinking straw, silo, water tank, mug, jar, lipstick, marker, pen, log, trash can, paper towel roll, toilet roll, thermos, test tube, flask, rolling pin, chimney, lamp post, tube"
 },
 {
 "p": "Name a real-life cone",
-"a": "ice cream cone, traffic cone, party hat, funnel, volcano, teepee/tipi, witch hat, cone, megaphone, pine tree, wizard hat, rocket nose, waffle cone, spinning top"
+"a": "ice cream cone, traffic cone, party hat, funnel, volcano, teepee/tipi, witch hat, cone, megaphone, pine tree, wizard hat, rocket nose, waffle cone, spinning top, dunce cap, birthday hat, ice cream, pylon, tepee, christmas tree, rocket, party horn, loudspeaker, lampshade, pine cone, carrot, sugar cone, snow cone, cone shell, volcano cone, hat"
 },
 {
 "p": "Name a real-life rectangle",
-"a": "door, window, phone, book, table, television/tv, screen, paper, card, tile, bed, flag, envelope, picture frame, whiteboard, brick, notebook, laptop, football pitch, desk"
+"a": "door, window, phone, book, table, television/tv, screen, paper, card, tile, bed, flag, envelope, picture frame, whiteboard, brick, notebook, laptop, football pitch, desk, monitor, tablet, keyboard, mouse pad, wall, floor, ceiling, board, blackboard, cabinet, fridge, oven, bookshelf, shelf, ticket, banknote, passport, credit card, business card, postcard, poster, magazine, mattress, rug, carpet, sofa, swimming pool, football field"
 },
 {
 "p": "Name a real-life circle",
-"a": "clock, wheel, coin, plate, pizza, ring, button, cd/dvd/disc, frisbee, tire/tyre, moon, record, manhole cover, steering wheel, pancake, bangle, donut, cookie"
+"a": "clock, wheel, coin, plate, pizza, ring, button, cd/dvd/disc, frisbee, tire/tyre, moon, record, manhole cover, steering wheel, pancake, bangle, donut, cookie, tyre, clock face, lid, sun, vinyl record, bowl top, drum top, hula hoop, manhole, pie, bagel, target, dartboard, roundabout, ferris wheel, watch, olympic ring, wedding ring, coaster, cd"
 },
 {
 "p": "Name a real-life triangle",
-"a": "yield sign/traffic sign, pizza slice, roof, pyramid, sail, pennant, slice of cake, tortilla chip, warning sign, tent, triangle instrument, flag, nacho, bunting, clothes hanger, sandwich"
+"a": "yield sign/traffic sign, pizza slice, roof, pyramid, sail, pennant, slice of cake, tortilla chip, warning sign, tent, triangle instrument, flag, nacho, bunting, clothes hanger, sandwich, slice of pizza, slice of pie, sail, pyramid face, roof gable, a frame, road sign, flag pennant, teepee, mountain, christmas tree, set square, sandwich half, dorito, arrowhead, shark fin, dunce hat"
 }
 ];

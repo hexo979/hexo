@@ -78,6 +78,7 @@ section:not(.hide){animation:fade .3s ease}
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="config.js"></script>
+<script src="divebank.js"></script>
 <script>
 const $=id=>document.getElementById(id),LIMIT=25,N=7;
 const D=new Date().toISOString().slice(0,10);
@@ -98,9 +99,9 @@ function matchList(text,list){const n=norm(text),tries=[n],t2=n.replace(GEN,"");
  for(const t of tries){const ts=stem(t);for(const g of list)for(const al of g){const as=stem(al),th=as.length>=7?2:as.length>=4?1:0,d=lev(ts,as);if(d<=th&&d<bd){bd=d;best=norm(g[0])}}}return best}
 const ptext=i=>typeof prompts[i]==="string"?prompts[i]:prompts[i].p;
 async function judge(text,i){const n=norm(text);if(!n)return{v:false,c:""};
- const it=prompts[i],m=typeof it==="string"?null:matchList(text,parseList(it.a));if(m)return{v:true,c:m};
+ const it=prompts[i],bk=(window.DIVE_BANK||[]).find(b=>b.p===ptext(i)),lst=(typeof it==="string"?"":it.a+",")+(bk?bk.a:""),m=lst.trim()?matchList(text,parseList(lst)):null;if(m)return{v:true,c:m};
  const key=ptext(i)+"|"+n,{data,error}=await sb.from("verdicts").select("v").eq("key",key).maybeSingle();if(error)throw error;
- if(data&&data.v){if(data.v.s==="valid")return{v:true,c:data.v.canon};if(data.v.s==="invalid")return{v:false,c:""};return{v:false,c:"",pending:true}}
+ if(data&&data.v){if(data.v.s==="valid")return{v:true,c:data.v.canon,clever:true};if(data.v.s==="invalid")return{v:false,c:""};return{v:false,c:"",pending:true}}
  await sb.from("verdicts").insert({key,v:{s:"pending",raw:text.slice(0,40),date:D}});return{v:false,c:"",pending:true}}
 let rows=[];
 function boardsHtml(rec){const M={};rows.forEach(r=>{M[r.uid]={days:r.days||{}}});M[uid]=M[uid]||{days:{}};M[uid].days={...M[uid].days,[D]:rec};
@@ -109,6 +110,17 @@ function boardsHtml(rec){const M={};rows.forEach(r=>{M[r.uid]={days:r.days||{}}}
  const tbl=(t,a)=>{a.sort((x,y)=>y.s-x.s);const m=a.findIndex(x=>x.me);return `<div class="card"><p><b>${t}</b></p><table>`+a.slice(0,10).map((x,i)=>`<tr><td style="width:2em">${i+1}</td><td>${esc(x.n||"Anonymous")}${x.me?" (you)":""}</td><td style="text-align:right"><b>${x.s*10} m</b></td></tr>`).join("")+`</table>`+(m>=10?`<p class="mute" style="margin-top:8px">Your rank: #${m+1} of ${a.length}</p>`:"")+`</div>`};
  const avg=day.length?Math.round(day.reduce((t,x)=>t+x.s,0)/day.length*10):0;
  return `<p class="mute">${day.length} player${day.length===1?"":"s"} today &middot; average depth ${avg} m</p>`+tbl("Today",day)+tbl("Last 7 days (total depth)",week)}
+async function webPop(c,p){if(c.length<3||/^\d+$/.test(c))return null;const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),3500);
+ try{const noun=p.toLowerCase().replace(/[^a-z0-9 ]/g," ").trim().split(/\s+/).pop(),q=encodeURIComponent(c+" "+noun);
+  const j=await(await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${q}&srlimit=1&format=json&origin=*`,{signal:ctl.signal})).json();
+  const title=j.query&&j.query.search[0]&&j.query.search[0].title;if(!title)return null;
+  const n=new Date(),e=new Date(Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),0)),s=new Date(Date.UTC(n.getUTCFullYear(),n.getUTCMonth()-3,1)),f=d=>d.toISOString().slice(0,10).replace(/-/g,"")+"00";
+  const r2=await fetch(`https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/${encodeURIComponent(title.replace(/ /g,"_"))}/monthly/${f(s)}/${f(e)}`,{signal:ctl.signal});
+  if(!r2.ok)return null;const it=(await r2.json()).items||[];return it.length?it.reduce((a,x)=>a+x.views,0)/it.length:null}catch(e){return null}finally{clearTimeout(tm)}}
+function score2(i,c,v,cl){const n=tot[i],k=cnt[i][c]||0,cp=n>=5?Math.round(15+85*(1-(k+1)/(n+1))):null,pop=v==null?null:Math.min(1,Math.max(0,(Math.log10(v+1)-2)/3.5)),wp=pop==null?null:Math.round(15+85*(1-pop));
+ let b;if(cp!=null&&wp!=null){const w=Math.min(1,n/40);b=Math.round(w*cp+(1-w)*wp)}else b=cp!=null?cp:wp!=null?wp:60;
+ const bonus=cl?Math.max(0,Math.min(12,100-b)):0,lab=pop==null?"no internet data":pop>.75?"very common online":pop>.5?"common online":pop>.25?"uncommon online":"rare online";
+ return{s:b+bonus,note:`${share(i,c)}<br>${lab}${v==null?"":" (about "+Math.round(v).toLocaleString()+" Wikipedia views a month)"}${cl?"<br>Clever answer bonus +"+bonus:""}`}}
 async function boot(){try{let{data:{session}}=await sb.auth.getSession();if(!session)session=(await sb.auth.signInAnonymously()).data.session;uid=session.user.id;
  const p=await sb.from("dive_prompts").select("items").eq("date",D).maybeSingle();prompts=p.data&&p.data.items;
  if(!prompts){$("stat").textContent="No dive has been set for today yet. Check back soon.";return}
@@ -120,10 +132,10 @@ $("go").onclick=()=>{idx=0;score=0;log=[];show("game");round()};
 function round(){done=false;$("rnd").textContent=`Prompt ${idx+1} of ${N}`;$("dep").textContent=score*10+" m";$("q").textContent=ptext(idx);$("ans").value="";$("ans").disabled=false;$("sub").disabled=false;$("res").textContent="";$("res").className="res";$("nxtWrap").classList.add("hide");$("ans").focus();t0=performance.now();tick()}
 function tick(){const l=Math.max(0,LIMIT-(performance.now()-t0)/1000);$("tl").textContent=l.toFixed(1)+"s";$("hl").style.transform=`scaleX(${l/LIMIT})`;$("hl").style.background=l<8?"var(--bad)":"";if(l<=0){submit();return}if(!done)raf=requestAnimationFrame(tick)}
 async function submit(){if(done)return;done=true;cancelAnimationFrame(raf);$("ans").disabled=true;$("sub").disabled=true;const text=$("ans").value.trim();let v=false,c="";
- let pend=false;if(text){$("res").textContent="Checking...";try{const r=await judge(text,idx);v=r.v;c=r.c;pend=!!r.pending}catch(e){v=null}}
- const s=v?pts(idx,c):0;score+=s;log.push({t:text,c,v,s,p:pend});$("dep").textContent=score*10+" m";
+ let pend=false,cl=false,web=null;if(text){$("res").textContent="Checking...";try{const r=await judge(text,idx);v=r.v;c=r.c;pend=!!r.pending;cl=!!r.clever;if(v){$("res").textContent="Checking how rare it is...";web=await webPop(c,ptext(idx))}}catch(e){v=null}}
+ const sc=v?score2(idx,c,web,cl):{s:0},s=sc.s;score+=s;log.push({t:text,c,v,s,p:pend,cl:cl?1:0,w:web==null?null:Math.round(web)});$("dep").textContent=score*10+" m";
  $("res").className="res "+(v?"ok":"bad");
- $("res").innerHTML=v?`${esc(c)} counts! +${s*10} m<br><span class="mute" style="font-weight:600">${share(idx,c)}</span>`:(v===null?"Could not check this answer, no points.":(pend?"Not on the list yet. Sent for review, no points for now.":(text?"Not accepted.":"No answer.")));
+ $("res").innerHTML=v?`${esc(c)} counts! +${s*10} m<br><span class="mute" style="font-weight:600">${sc.note}</span>`:(v===null?"Could not check this answer, no points.":(pend?"Not on the list yet. Sent for review, no points for now.":(text?"Not accepted.":"No answer.")));
  $("nxt").textContent=idx===N-1?"See results":"Next";$("nxtWrap").classList.remove("hide");$("nxt").focus()}
 $("sub").onclick=submit;$("ans").addEventListener("keydown",e=>{if(e.key==="Enter")submit()});
 $("nxt").onclick=async()=>{if(idx<N-1){idx++;round();return}
@@ -132,7 +144,7 @@ $("nxt").onclick=async()=>{if(idx<N-1){idx++;round();return}
  log.forEach((x,i)=>{if(x.v&&x.c){cnt[i][x.c]=(cnt[i][x.c]||0)+1;tot[i]++}});showEnd(rec,false)};
 function showEnd(rec,again){show("end");$("boards").innerHTML=boardsHtml(rec);$("depth").textContent=rec.s*10+" m";$("fin").textContent=again?"You already dived today. Come back tomorrow.":"Deepest answers are the rarest ones.";
  $("sum").innerHTML=rec.r.map((x,i)=>{const top=Object.entries(cnt[i]||{}).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k,c])=>`${esc(k)} (${Math.round(100*c/Math.max(1,tot[i]))}%)`).join(", ");
-  return `<p style="margin:10px 0"><b>${esc(ptext(i))}</b><br>You: ${x.t?esc(x.t):"no answer"} ${x.v?"&rarr; "+esc(x.c)+" &middot; +"+x.s*10+" m":x.p?"(under review)":x.v===null?"(could not be checked)":"(not accepted)"}<br><span class="mute">Top answers: ${top||"none yet"}</span></p>`}).join("")}
+  return `<p style="margin:10px 0"><b>${esc(ptext(i))}</b><br>You: ${x.t?esc(x.t):"no answer"} ${x.v?"&rarr; "+esc(x.c)+" &middot; +"+x.s*10+" m"+(x.cl?" &middot; clever bonus":""):x.p?"(under review)":x.v===null?"(could not be checked)":"(not accepted)"}<br><span class="mute">Top answers: ${top||"none yet"}</span></p>`}).join("")}
 boot();
 </script>
 </body>
